@@ -1,16 +1,30 @@
 <template>
     <footer>
-        <div id="logos-container">
-            <img src="./icons/github-icon.svg" alt="Logo GitHub">
-            <img src="./icons/linkedin-icon.svg" alt="Logo LinkedIn">
+        <div :id="'logos-container'">
+            <img :class="'logos-footer'" src="./icons/github-icon.svg" alt="Logo GitHub">
+            <img :class="'logos-footer'" src="./icons/linkedin-icon.svg" alt="Logo LinkedIn">
         </div>
-        <p>Copyright © 2023 - Agustin Camejo</p>
+        <p :style="'font-size:11px '">Copyright © 2023 - Agustin Camejo</p>
     </footer>
 </template>
 
-<style >
+<style>
+footer{
+    border-top: 1px solid #ddd;
+    width: 80%;
+    position: absolute;
+    bottom:0;
+    padding: 0.44rem 0rem 0rem 0rem;
+    text-align: center;
+}
+
 #logos-container{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
 }
+
+.logos-footer{
+    padding: 0px 8px;
+}
+
 </style>

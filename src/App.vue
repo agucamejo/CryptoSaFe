@@ -3,13 +3,9 @@
 </script>
 
 <template>
-  <header>
     <div>
-      <nav>
-        <!-- <RouterLink to="/login">Iniciar Sesion</RouterLink> -->
-      </nav>
+      
     </div>
-  </header>
 
   <RouterView />
 </template>

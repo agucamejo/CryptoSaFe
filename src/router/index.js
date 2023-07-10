@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { defineAsyncComponent } from 'vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,47 +7,47 @@ const router = createRouter({
     {
       path: '/',
       name: 'welcome',
-      component: import ('../views/WelcomeView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/WelcomeView.vue')})
     },
     {
       path: '/login',
       name: 'login',
-      component: import ('../views/LoginView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/LoginView.vue')})
     },
     {
       path: '/home',
       name: 'home',
-      component: import ('../views/HomeView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/HomeView.vue')})
     },
     {
       path: '/shopping',
       name: 'shopping',
-      component: import ('../views/ShoppingView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/ShoppingView.vue')})
     },
     {
       path: '/sells',
       name: 'sells',
-      component: import ('../views/SellsView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/SellsView.vue')})
     },
     {
       path: '/movements',
       name: 'movements',
-      component: import ('../views/MovementsView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/MovementsView.vue')})
     },
     {
       path: '/balance',
       name: 'balance',
-      component: import ('../views/BalanceView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/BalanceView.vue')})
     },
     {
       path: '/learn',
       name: 'learn',
-      component: import ('../views/LearnView.vue') 
+      component: defineAsyncComponent({ loader: () => import ('../views/LearnView.vue')})
     },
     {
       path: '/help',
       name: 'help',
-      component: import ('../views/HelpView.vue') 
+      component: () => import ('../views/HelpView.vue')
     }
   ]
 })
