@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useMenuStore = defineStore('menu', {
+export const useActiveOptionStore = defineStore('activeOption', {
   state: () => ({
     activeOption: 'inicio',
   }),

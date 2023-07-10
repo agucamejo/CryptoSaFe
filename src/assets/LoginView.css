@@ -19,7 +19,7 @@
 
 .form{
     grid-area: form;
-    height: 100vh;
+    height: 80vh;
     display: grid;
     justify-items: center;
   }

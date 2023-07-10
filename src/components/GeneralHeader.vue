@@ -1,12 +1,12 @@
 <template>
     <div class="header">
-        <p class="titulos" :style="'font-weight:300'">Nombre seccion</p>
+        <p class="titulos" :style="'font-weight:400'">{{activeOption.toUpperCase()}}</p>
     </div>
 </template>
 
 <style>
 .header{
-    width: 80%;
+    width: 75%;
     border-bottom: 1.2px solid #8c8c8c;
     position: absolute;
     top:0;
@@ -14,3 +14,19 @@
     text-align: center;
 }
 </style>
+
+<script>
+import { useActiveOptionStore } from '../stores/menuBar';
+
+export default {
+  // ...
+  setup() {
+    const activeOptionStore = useActiveOptionStore();
+    const activeOption = activeOptionStore.activeOption;
+
+    return {
+      activeOption,
+    };
+  },
+};
+</script>
