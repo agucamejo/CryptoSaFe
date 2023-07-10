@@ -53,16 +53,18 @@
 </template>
 
 <script>
+import { useActiveOptionStore } from '../stores/menuBar.js';
+
 export default {
-  data() {
+  setup() {
+    const activeOptionStore = useActiveOptionStore();
+    const activeOption = activeOptionStore.activeOption;
+    const setActiveOption = activeOptionStore.setActiveOption;
+
     return {
-      activeOption: 'inicio', // Opción activa por defecto
+      activeOption,
+      setActiveOption,
     };
-  },
-  methods: {
-    setActiveOption(option) {
-      this.activeOption = option;
-    },
   },
 };
 </script>
@@ -89,7 +91,7 @@ li{
   position: fixed;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 250px;
   height: 100%;
   background-color: #f1f1f1;
   border-radius: 0px 10px 10px 0px;

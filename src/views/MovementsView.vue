@@ -1,14 +1,16 @@
 <script setup>
-import '../assets/main.css'
+import '../assets/MovementsView.css'
 import MenuBar from '../components/MenuBar.vue'
 import GeneralFooter from '../components/GeneralFooter.vue'
 import GeneralHeader from '../components/GeneralHeader.vue';
 </script>
 
 <template>
-  <div>
-    <GeneralHeader></GeneralHeader>
-    <MenuBar></MenuBar>
-    <GeneralFooter></GeneralFooter>
+  <div class="container">
+    <div class="logo"></div>
+    <div class="section-name"><GeneralHeader></GeneralHeader></div>
+    <div class="menu"><MenuBar></MenuBar></div>
+    <div class="main-content"></div>
+    <div class="footer"><GeneralFooter></GeneralFooter></div>
   </div>
 </template>
