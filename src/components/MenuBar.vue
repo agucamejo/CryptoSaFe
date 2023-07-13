@@ -11,13 +11,13 @@
         <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'compras' }">
-        <img src="./icons/shopping-bag-icon.svg" alt="shopping bag icon">
-        <RouterLink to="/shopping" @click="setActiveOption('compras')">Compras</RouterLink>
+        <img src="./icons/purchase-bag-icon.svg" alt="purchase bag icon">
+        <RouterLink to="/purchase" @click="setActiveOption('compras')">Compras</RouterLink>
         <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'ventas' }">
         <img src="./icons/tag-icon.svg" alt="tag icon">
-        <RouterLink to="/sells" @click="setActiveOption('ventas')">Ventas</RouterLink>
+        <RouterLink to="/sales" @click="setActiveOption('ventas')">Ventas</RouterLink>
         <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'movimientos' }">

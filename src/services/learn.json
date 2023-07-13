@@ -1,0 +1,53 @@
+{
+	"questions": [{
+			"id": 1,
+			"question": "¿Qué es una criptomoneda?",
+			"answer": "Una criptomoneda es un activo digital que emplea un cifrado criptográfico para garantizar su titularidad y asegurar la integridad de las transacciones, y controlar la creación de unidades adicionales, es decir, evitar que alguien pueda hacer copias como haríamos, por ejemplo, con una foto. Estas monedas no existen de forma física: se almacenan en una cartera digital."
+		},
+		{
+			"id": 2,
+			"question": "¿Como funcionan las criptomonedas?",
+			"answer": "Las criptomonedas cuentan con características diferenciadoras respecto a los sistemas tradicionales: no están reguladas ni controladas por ninguna institución y no requieren de intermediaros en las transacciones. Se usa una base de datos descentralizada, blockchain o registro contable compartido, para el control de estas transacciones. Ya que estas monedas no están disponibles de forma física, hay que recurrir a un servicio de monedero digital de criptomonedas."
+		},
+		{
+			"id": 3,
+			"question": "¿Cuántos tipos de monederos digitales existen?",
+			"answer": "Un monedero digital o wallet es un software o aplicación donde es posible almacenar, enviar y recibir criptomonedas. Lo cierto es que a diferencia de un monedero de dinero físico, lo que realmente se almacena en los wallets o monederos digitales son las claves que nos dan la propiedad y derecho sobre las criptomonedas, y nos permiten operar con ellas. Dicho de otra forma, basta con conocer las claves para poder transferir las criptomonedas, y la pérdida o robo de las claves puede suponer la pérdida de las criptomonedas. Hay dos tipos de monederos: los calientes, los cuales están conectados a internet (monederos web, monederos móviles y monederos de escritorio); y los fríos, que no están conectados a internet (monederos hardware y monederos de papel)."
+		},
+		{
+			"id": 4,
+			"question": "¿Cómo se determina el valor de una criptomoneda?",
+			"answer": "El valor de las criptomonedas varía en función de la oferta, de la demanda, y del compromiso de los usuarios. Este valor se forma en ausencia de mecanismos eficaces que impidan su manipulación, como los presentes en los mercados regulados de valores. En muchas ocasiones los precios se forman también sin información pública que los respalde."
+		},
+		{
+			"id": 5,
+			"question": "Las criptomonedas usan blockchain",
+			"answer": "Las criptomonedas funcionan mediante el registro contable compartido o blockchain. Esta tecnología les aporta un elevado sistema de seguridad con capacidad para evitar, por ejemplo, que un mismo activo digital se pueda transferir en dos ocasiones o que sea falsificado. La tecnología blockchain funciona como un gran libro de contabilidad donde se pueden registrar y almacenar cantidades ingentes de información. Toda ella está compartida en la red y protegida de tal forma que todos los datos que alberga no se pueden alterar ni eliminar."
+		},
+		{
+			"id": 6,
+			"question": "¿Qué significa minar criptomonedas?",
+			"answer": "Es el proceso necesario para validar las operaciones que se llevan a cabo mediante este tipo de activos digitales. Por ejemplo, si tomamos el caso de una moneda bitcoin: su minería se basaría en la validación y el registro de las transacciones en el registro blockchain. En definitiva, minar criptomonedas supone resolver con éxito los problemas matemáticos que se presentan. Los mineros que lo han llevado a cabo obtienen a cambio criptomonedas."
+		},
+		{
+			"id": 7,
+			"question": "¿Cuántos tipos de criptomonedas hay?",
+			"answer": "Para crear criptomonedas, es crucial tener conocimientos en criptografía, o al menos, saber programar para, en dicho caso, poder clonar código de otra criptomoneda, y poder así crearla. En la actualidad, existen miles de criptomonedas, entre las que encontramos, por ejemplo, Bitcoin, Ethereum(Ether), Cardano, Solana, Litecoin y más."
+		},
+		{
+			"id": 8,
+			"question": "¿Qué es un bitcoin?",
+			"answer": "Bitcoin es el nombre que recibió la primera criptomoneda. Data del año 2009 y nació de la mano de una persona o grupo de personas que se hicieron llamar Satoshi Nakamoto, quienes lograron crear el bitcoin bajo la tecnología blockchain, que ellos mismos inventaron. Al igual que el resto de criptomonedas, no existe ningún tipo de regulación para ella."
+		},
+		{
+			"id": 9,
+			"question": "¿Cómo se pueden adquirir criptomonedas?",
+			"answer": "Podemos conseguirlas mediante la compra o intercambio de la moneda en portales especializados. Es importante tener en cuenta que las criptomonedas son instrumentos complejos, que pueden no ser adecuados para personas sin los conocimientos suficientes, y cuyo precio conlleva un alto componente especulativo que puede suponer incluso la pérdida total del dinero pagado para comprar las criptomonedas."
+		},
+		{
+			"id": 10,
+			"question": "¿Es seguro invertir en criptomonedas?",
+			"answer": "La inversión en criptomonedas conlleva riesgos y volatilidad significativos. Es importante investigar y comprender los proyectos y las criptomonedas en las que se desea invertir, así como tomar medidas de seguridad para proteger los activos digitales."
+		}
+	]
+}

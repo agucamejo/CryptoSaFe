@@ -22,6 +22,93 @@
     </div>
 </template>
 
-<script>
-import '../assets/LoginView.css'
-</script>
+<style scoped>
+.container {  display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.2fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "logo"
+      "form";
+}
+
+.logo { 
+    grid-area: logo;
+    background-color: rgb(224, 224, 224);
+    display: flex;
+    padding: 0.5rem;
+    box-shadow: 0px 2px rgba(0, 0, 0, 0.25);
+    justify-content: center;
+}
+
+.form{
+    grid-area: form;
+    height: 80vh;
+    display: grid;
+    justify-items: center;
+  }
+  .inner {
+    position: absolute;
+  }
+  .inner-container{
+    width:450px;
+    height:450px;
+    position:absolute;
+
+  }
+  .box{
+    position:absolute;
+    height:100%;
+    width:100%;
+    color:#fff;
+    background:rgba(0, 0, 0, 0.09);
+    padding:15px 0px;
+    border-radius: 25px;
+    margin-top: 5rem;
+    display: grid;
+    justify-items: center;
+  }
+  .box h1{
+    text-align:center;
+    margin:30px 0;
+    font-size:30px;
+    color: #00146B;
+  }
+  .box input{
+    display:block;
+    width:300px;
+    margin:18px auto;
+    padding:15px;
+    background:rgba(0,0,0,0.2);
+    color:#000;
+    border:0;
+    border-radius: 19px;
+  }
+  .box input:focus,.box input:active,.box button:focus,.box button:active{
+    outline:none;
+  }
+  .box button{
+    background:#F7931A;
+    border:0;
+    color:#000000;
+    padding:10px;
+    font-size:18px;
+    width:150px;
+    margin:30px auto;
+    display:block;
+    cursor:pointer;
+    border-radius: 19px;
+  }
+  .box button:active{
+    background:#dd8213;
+  }
+  .box p{
+    font-size:14px;
+    text-align:center;
+  }
+  .box p span{
+    cursor:pointer;
+    color:#4d4c4c;
+  }
+</style>

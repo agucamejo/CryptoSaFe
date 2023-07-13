@@ -1,5 +1,5 @@
 <script setup>
-import '../assets/ShoppingView.css'
+import '../assets/PurchaseView.css'
 import MenuBar from '../components/MenuBar.vue'
 import GeneralFooter from '../components/GeneralFooter.vue'
 import GeneralHeader from '../components/GeneralHeader.vue';

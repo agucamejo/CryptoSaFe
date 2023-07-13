@@ -1,5 +1,5 @@
 <script setup>
-import '../assets/SellsView.css'
+import '../assets/SalesView.css'
 import MenuBar from '../components/MenuBar.vue'
 import GeneralFooter from '../components/GeneralFooter.vue'
 import GeneralHeader from '../components/GeneralHeader.vue';
