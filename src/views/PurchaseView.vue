@@ -1,3 +1,20 @@
+<script setup>
+import MenuBar from '../components/MenuBar.vue'
+import GeneralFooter from '../components/GeneralFooter.vue'
+import GeneralHeader from '../components/GeneralHeader.vue';
+</script>
+
+<template>
+  <div class="container">
+    <div class="logo"></div>
+    <div class="section-name"><GeneralHeader></GeneralHeader></div>
+    <div class="menu"><MenuBar></MenuBar></div>
+    <div class="main-content"></div>
+    <div class="footer"><GeneralFooter></GeneralFooter></div>
+  </div>
+</template>
+
+<style scoped>
 .container {  display: grid;
     grid-template-columns: 0.4fr 1.6fr;
     grid-template-rows: 1fr 1fr 0.5fr 1.5fr 1fr 1fr;
@@ -22,4 +39,4 @@
   .section-name { grid-area: section-name; }
   
   .footer { grid-area: footer; }
-  
+</style>

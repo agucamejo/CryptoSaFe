@@ -20,14 +20,14 @@ const router = createRouter({
       component: defineAsyncComponent({ loader: () => import ('../views/HomeView.vue')})
     },
     {
-      path: '/shopping',
-      name: 'shopping',
-      component: defineAsyncComponent({ loader: () => import ('../views/ShoppingView.vue')})
+      path: '/purchase',
+      name: 'purchase',
+      component: defineAsyncComponent({ loader: () => import ('../views/PurchaseView.vue')})
     },
     {
-      path: '/sells',
-      name: 'sells',
-      component: defineAsyncComponent({ loader: () => import ('../views/SellsView.vue')})
+      path: '/sales',
+      name: 'sales',
+      component: defineAsyncComponent({ loader: () => import ('../views/SalesView.vue')})
     },
     {
       path: '/movements',
