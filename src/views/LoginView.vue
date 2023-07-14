@@ -8,19 +8,61 @@
             </div>
         </div>
 
-        <div class="form">
+        <form class="form" @submit.prevent="submitForm">
             <div class="inner-container">
                 <div class="box">
                     <h1>Iniciar Sesion</h1>
-                    <input type="text" placeholder="Usuario"/>
-                    <input type="text" placeholder="Contraseña"/>
-                    <button><RouterLink to="/home" style="color: #000000; text-decoration: none;">Ingresar</RouterLink></button>
+                    <input type="text" id="id" v-model="id" placeholder="Usuario"/>
+                    <input type="password" id="password" placeholder="Contraseña"/>
+                    <button type="submit">Ingresar</button>
                     <RouterLink to="/" style="color: #000000">Cancelar</RouterLink>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </template>
+
+<script>
+import { defineComponent, ref } from 'vue';
+import { useAuthStore } from '../stores/login';
+import { useRouter } from 'vue-router';
+import  apiClient from '../services/apiClient';
+
+export default defineComponent({
+  setup() {
+    const id = ref('');
+
+    const authStore = useAuthStore();
+    const router = useRouter();
+
+    const submitForm = () => {
+      if (id.value) {
+        authStore.setCredentials(id.value, ''); // Establecer contraseña vacía
+        router.push({ name: 'home' });
+
+        const credentials = { id: id.value };
+        apiClient.login(credentials)
+          .then(response => {
+            // Aquí puedes manejar la respuesta de la solicitud de inicio de sesión
+            console.log(response.data); // Por ejemplo, imprimir la respuesta en la consola
+          })
+          .catch(error => {
+            // Aquí puedes manejar los errores de la solicitud de inicio de sesión
+            console.error(error);
+          });
+      } else {
+        alert('Por favor, ingresa un ID válido.');
+      }
+    };
+
+    return {
+      id,
+      submitForm,
+    };
+  },
+});
+</script>
+
 
 <style scoped>
 .container {  display: grid;
@@ -55,7 +97,6 @@
     width:450px;
     height:450px;
     position:absolute;
-
   }
   .box{
     position:absolute;
@@ -68,6 +109,7 @@
     margin-top: 5rem;
     display: grid;
     justify-items: center;
+    box-shadow: -1px 0px 25px 0px #133a4a69;
   }
   .box h1{
     text-align:center;

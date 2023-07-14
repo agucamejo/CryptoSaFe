@@ -12,7 +12,7 @@
 footer{
     border-top: 1.2px solid #8c8c8c;
     width: 95%;
-    padding: 0.44rem 0rem 0rem 0rem;
+    padding: 0.52rem 0rem 0rem 0rem;
     margin: 1rem 0rem 0rem 0rem;
     text-align: center;
 }

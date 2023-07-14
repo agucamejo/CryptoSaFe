@@ -18,7 +18,7 @@
 
         <div class="banner">
             <h2 class="banner-title" style="font-size: 40px">Gestión de criptomonedas en un solo lugar</h2>
-            <p class="banner-p">Disfrute de acceso total a las mejores criptos desde una plataforma única y optimizada. Ingrese en el mundo de DeFi y aproveche oportunidades financieras revolucionarias.</p>
+            <p class="banner-p">Disfrute de acceso total a las cryptos más populares desde una plataforma única y optimizada. Ingrese en el mundo de DeFi y aproveche oportunidades financieras revolucionarias.</p>
             <img class="banner-img" src="../assets/img/save-coins.png" alt="ilustration of cryptos coins"/>
         </div>
 
@@ -143,7 +143,7 @@
     .banner-p { 
         grid-area: banner-p;
         padding: 0rem 0rem 0rem 6rem;  
-        width: 738px; 
+        width: 745px; 
         line-height: 27.58px; 
         letter-spacing: 1.10px;
     }
