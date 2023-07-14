@@ -9,9 +9,9 @@ function apiClient() {
 
 export default {
   login(credentials) {
-    const { id } = credentials;
+    const { id, password } = credentials;
     
-    return apiClient().post('/login', { user_id: id});
+    return apiClient().post('/login', { user_id: id, password });
   },
 };
 

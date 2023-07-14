@@ -13,7 +13,7 @@
                 <div class="box">
                     <h1>Iniciar Sesion</h1>
                     <input type="text" id="id" v-model="id" placeholder="Usuario"/>
-                    <input type="password" id="password" placeholder="Contraseña"/>
+                    <input type="password" id="password"  v-model="password" placeholder="Contraseña"/>
                     <button type="submit">Ingresar</button>
                     <RouterLink to="/" style="color: #000000">Cancelar</RouterLink>
                 </div>
@@ -23,24 +23,25 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent,ref } from 'vue';
 import { useAuthStore } from '../stores/login';
 import { useRouter } from 'vue-router';
-import  apiClient from '../services/apiClient';
+import apiClient from '../services/apiClient';
 
 export default defineComponent({
   setup() {
     const id = ref('');
+    const password = ref('');
 
     const authStore = useAuthStore();
     const router = useRouter();
 
     const submitForm = () => {
-      if (id.value) {
-        authStore.setCredentials(id.value, ''); // Establecer contraseña vacía
+      if (id.value && password.value) {
+        authStore.setCredentials(id.value, password.value);
         router.push({ name: 'home' });
 
-        const credentials = { id: id.value };
+        const credentials = { id: id.value, password: password.value };
         apiClient.login(credentials)
           .then(response => {
             // Aquí puedes manejar la respuesta de la solicitud de inicio de sesión
@@ -51,17 +52,19 @@ export default defineComponent({
             console.error(error);
           });
       } else {
-        alert('Por favor, ingresa un ID válido.');
+        alert('Por favor, completa ambos campos.');
       }
     };
 
     return {
       id,
+      password,
       submitForm,
     };
   },
 });
 </script>
+
 
 
 <style scoped>
