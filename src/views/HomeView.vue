@@ -21,7 +21,6 @@ export default {
     <div class="section-name"><GeneralHeader></GeneralHeader></div>
     <div class="menu"><MenuBar></MenuBar></div>
     <div class="main-content">
-      <h3>Tabla Bitcoin</h3>
       <TablaBitcoin />
     </div>
     <div class="footer"><GeneralFooter></GeneralFooter></div>
@@ -31,7 +30,7 @@ export default {
 <style scoped>
 .container {  display: grid;
     grid-template-columns: 0.4fr 1.6fr;
-    grid-template-rows: 0.5fr 1fr 0.5fr 4fr 1fr 0fr;
+    grid-template-rows: 0.5fr 1fr 0.5fr 2fr 1fr auto;
     grid-auto-rows: 1fr;
     gap: 0px 0px;
     grid-auto-flow: row;
@@ -44,7 +43,10 @@ export default {
       "menu footer";
   }
   
-  .main-content { grid-area: main-content; }
+  .main-content { 
+    grid-area: main-content;
+    margin: 2rem 0rem;
+  }
   
   .logo { grid-area: logo; }
   
