@@ -2,6 +2,7 @@
 import MenuBar from '../components/MenuBar.vue'
 import GeneralFooter from '../components/GeneralFooter.vue'
 import GeneralHeader from '../components/GeneralHeader.vue';
+import SalesSection from '../components/SalesSection.vue';
 </script>
 
 <template>
@@ -9,7 +10,9 @@ import GeneralHeader from '../components/GeneralHeader.vue';
     <div class="logo"></div>
     <div class="section-name"><GeneralHeader></GeneralHeader></div>
     <div class="menu"><MenuBar></MenuBar></div>
-    <div class="main-content"></div>
+    <div class="main-content">
+      <SalesSection />
+    </div>
     <div class="footer"><GeneralFooter></GeneralFooter></div>
   </div>
 </template>
