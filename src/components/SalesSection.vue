@@ -60,11 +60,12 @@
                     <button type="submit" @click="showConfirmation = true">Confirmar venta</button>
                 </div>
             </div>
-            <div v-if="showConfirmation">
+            <div v-if="showConfirmation" class="confirmation-overlay">
                 <div class="confirmation-form">
-                    <input type="text" v-model="username" placeholder="Nombre de usuario" />
+                  <button class="close-button" @click="showConfirmation = false">X</button>
+                    <input type="text" v-model="username" placeholder="ID de usuario" />
                     <input type="password" v-model="password" placeholder="Contraseña" />
-                    <button @click="validateAndConfirm">Confirmar venta</button>
+                    <button @click="validateAndConfirm" class="confirmation-button">Finalizar venta</button>
                 </div>
             </div>
       </div>
@@ -73,6 +74,7 @@
   
   <script>
 import { ref } from 'vue';
+import axios from 'axios';
 
   export default {
     data() {
@@ -109,29 +111,75 @@ import { ref } from 'vue';
         this.valorVenta = this.valorPago / this.data.bid;
       },
       validateAndConfirm() {
-        const storedId = localStorage.getItem('id');
-        const storedPassword = localStorage.getItem('password');
+      const storedId = localStorage.getItem('id');
+      const storedPassword = localStorage.getItem('password');
 
-        // Comprobar si los campos coinciden con los almacenados en el localStorage
-        if (this.username === storedId && this.password === storedPassword) {
-            // Si la validación es correcta, realizar la compra e enviar la información al servidor para procesar la compra.
-
-            // Después de confirmar la compra, restablecer los valores predeterminados
-            this.monedaVenta = 'btc';
-            this.monedaPago = 'ars';
-            this.valorVenta = '';
-            this.valorPago = '';
-            this.showConfirmation = false;
-            this.username =  '',
-            this.password = '',
-
-            alert('Su venta fue ejecutada con éxito!!!');
-
-        } else {
-            alert('Credenciales incorrectas. Inténtalo de nuevo.');
+      // Comprobar si los campos coinciden con los almacenados en el localStorage
+      if (this.username === storedId && this.password === storedPassword) {
+        // Validar que los datos sean correctos antes de la compra
+        if (this.valorVenta <= 0 || this.valorPago <= 0) {
+          alert('El monto y el valor deben ser mayores a 0.');
+          return;
         }
-      },
+
+        const currentDate = new Date();
+        const formattedDate = this.formatDate(currentDate);
+
+        // Realizar la compra y enviar la información al servidor para procesar la transacción.
+        const transactionData = {
+          user_id: this.username,
+          action: 'sales',
+          crypto_code: this.monedaVenta,
+          crypto_amount: this.valorVenta.toString(),
+          money: this.valorPago.toString(),
+          datetime: formattedDate,
+        };
+
+        this.sendTransactionData(transactionData);
+        console.log(transactionData);
+      } else {
+        alert('Credenciales incorrectas. Inténtalo de nuevo.');
+      }
     },
+    
+
+    // Método para realizar la solicitud POST a la API de transacciones
+    sendTransactionData(transactionData) {
+      const apiUrl = 'https://laboratorio3-f36a.restdb.io/rest/transactions';
+      const apiKey = '60eb09146661365596af552f';
+
+      axios
+        .post(apiUrl, transactionData, {
+          headers: { 'x-apikey': apiKey },
+        })
+        .then(() => {
+          // Si la solicitud es exitosa, restablecer los valores predeterminados
+          this.monedaVenta = 'btc';
+          this.monedaPago = 'ars';
+          this.valorVenta = '';
+          this.valorPago = '';
+          this.showConfirmation = false;
+          this.username = '';
+          this.password = '';
+
+          alert('Su venta fue ejecutada con éxito!!!');
+        })
+        .catch((error) => {
+          console.error(error);
+          alert('Ha ocurrido un error al procesar la venta. Por favor, inténtelo de nuevo más tarde.');
+        });
+    },
+    formatDate(date) {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+
+      return `${day}-${month}-${year} ${hours}:${minutes}`;
+    }
+    
+  },
   };
   </script>
   
@@ -225,5 +273,47 @@ import { ref } from 'vue';
     justify-content: space-between;
     padding: 0.3rem 1rem;
  }
+
+ 
+ .confirmation-overlay{
+  position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.6); /* Add some transparency to make it look like an overlay */
+    z-index: 9999;
+ }
+
+ .confirmation-form{
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    grid-gap: 1rem;
+    background: #000000;
+    padding: 2rem;
+    border-radius: 12px;
+ }
+
+ .confirmation-button {
+    margin: auto;
+    background: rgba(252, 169, 36, 0.84);  
+    border-radius: 12px;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+ }
+
+ .close-button {
+    color: white;
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+  }
   </style>
   
