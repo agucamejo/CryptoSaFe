@@ -18,40 +18,28 @@
 
         <div class="banner">
             <h2 class="banner-title" style="font-size: 40px">Gestión de criptomonedas en un solo lugar</h2>
-            <p class="banner-p">Disfrute de acceso total a las cryptos más populares desde una plataforma única y optimizada. Ingrese en el mundo de DeFi y aproveche oportunidades financieras revolucionarias.</p>
+            <p class="banner-p">Disfrute de acceso total a las cryptos más populares desde una  plataforma única y optimizada. Ingrese en el mundo de DeFi y aproveche oportunidades financieras revolucionarias.</p>
             <img class="banner-img" src="../assets/img/save-coins.png" alt="ilustration of cryptos coins"/>
         </div>
 
 
-        <div class="values">
-            <div class="crypto-1">
-                <img src="../assets/img/Bitcoin-valor.png" />
-                <h4 style="color: #F07D46">Venta: <br> <span>1.000.000</span></h4>
-                <h4 style="color: #F07D46">Compra: <br> <span>1.000.000</span></h4>
+        <div class="slider" v-if="coinData.length">
+          <div class="slider-track" >
+            <div class="slide" v-for="(data, index) in coinData" :key="index">
+              <div class="crypto">
+                <h4 :class="getRandomColorClass(index)">{{ data.coin }}</h4>
+                <p>Venta <span>{{ data.ask }}</span></p>
+                <p>Compra <span>{{ data.bid }}</span></p>
+              </div>
             </div>
-            
-            <div class="crypto-2">
-                <img src="../assets/img/Ethereum-valor.png" />
-                <h4 style="color: #464544">Venta: <br> <span>1.000.000</span></h4>
-                <h4 style="color: #464544">Compra: <br> <span>1.000.000</span></h4>
-            </div>
-            
-            <div class="crypto-3">
-                <img src="../assets/img/Potcoin-valor.png" />
-                <h4 style="color: #FF529F">Venta: <br> <span>1.000.000</span></h4>
-                <h4 style="color: #FF529F">Compra: <br> <span>1.000.000</span></h4>
-            </div>
-            
-            <div class="crypto-4">
-                <img src="../assets/img/IOTA-valor.png" />
-                <h4 style="color: #602CA3">Venta: <br> <span>1.000.000</span></h4>
-                <h4 style="color: #602CA3">Compra: <br> <span>1.000.000</span></h4>
-            </div>
+          </div>
         </div>
+
+        <div v-else>Loading...</div>
         
         
         <div class="advantages">
-            <h2 class="advanteges-title" style="text-align: center; color: #00146B; font-size: 40px; padding-top: 4rem;">El futuro de tu libertad financiera al <br/>alcance de tu mano</h2>
+            <h2 class="advanteges-title" style="text-align: center; color: #00146B; font-size: 40px; padding-top: 4rem;">Tu libertad financiera al alcance de tu mano</h2>
             <div class="adventage-1">
                 <img class="photo-1" src="../assets/img/sell-change.png" />
                 <h4 class="title-1">Compra y venta de criptomonedas </h4>
@@ -60,7 +48,7 @@
             <div class="adventage-2">
                 <img class="photo-2" src="../assets/img/money-bag.png" />
                 <h4 class="title-2">Control de tus fondos actuales</h4>
-                <p class="text-2">Permite el seguimiento completo, preciso y <br/>en tiempo real de activos financieros.</p>
+                <p class="text-2">Permite el seguimiento completo, preciso y <br/>en tiempo real de tus financias.</p>
             </div>
             <div class="adventage-3">
                 <img class="photo-3" src="../assets/img/stats-image.png" />
@@ -73,7 +61,7 @@
             <hr>
             <p style="font-size: 35px; padding-top: 2rem">Si no te sientes seguro o eres nuevo en este ámbito, no te preocupes</p>
             <p style="margin-top: 1rem">En CryptoSaFe, te brindamos la información necesaria para que puedas incursionar en el mundo de las criptomonedas, persiguiendo tus metas económicas.<br/>
-                <br/>Para más información, visita la sección Aprender.</p>
+                <br/>Para más información, visita la sección <b>Aprender</b>.</p>
         </div>
 
         <div class="footer">
@@ -88,16 +76,90 @@
     </div>
 </template>
 
+
+<script>
+export default {
+  name: "CoinValues",
+  data() {
+    return {
+      coinData: [],
+    };
+  },
+  methods: {
+    getRandomColorClass(index) {
+      const colors = ['color-red', 'color-blue', 'color-green', 'color-orange', 'color-grey', 'color-purple', 'color-darkgreen', 'color-darkblue', 'color-pink']; // Add more colors as needed
+      return colors[index % colors.length]; // Use modulo to loop through the colors
+    },
+  },
+  async created() {
+    const fiat = "ARS";
+    const vol = 1.0;
+    const coins = ["BNB", "BTC", "BUSD", "DAI", "ETH", "MATIC", "SOL", "USDC", "USDT"];
+
+    for (const coin of coins) {
+      const endpoint = `https://criptoya.com/api/tiendacrypto/${coin}/${fiat}/${vol}`;
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        this.coinData.push({
+          coin: coin,
+          ask: data.ask,
+          bid: data.bid,
+        });
+      } catch (error) {
+        console.error(`Error fetching data for ${coin}:`, error);
+      }
+    }
+  },
+};
+</script>
+
+
+
 <style scoped>
+.color-red {
+  color: red;
+}
+
+.color-blue {
+  color: blue;
+}
+
+.color-green {
+  color: green;
+}
+
+.color-orange {
+  color: orange;
+}
+
+.color-purple {
+  color: purple;
+}
+
+.color-grey {
+  color: #47423E;
+}
+
+.color-darkblue {
+  color: #422DB8;
+}
+
+.color-pink {
+  color: #FF0066;
+}
+.color-darkgreen {
+  color: #08726e;
+}
 .container {  display: grid;
     grid-template-columns: 0.4fr 1.6fr;
-    grid-template-rows: 0.2fr 1.2fr 0.1fr 2.7fr 0.8fr 0.3fr;
+    grid-template-rows: 0.2fr 1.2fr 0.175fr 2.7fr 0.8fr 0.3fr;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
       "logo input"
       "banner banner"
-      "values values"
+      "slider slider"
       "advantages advantages"
       "cta-learn cta-learn"
       "footer footer";
@@ -143,69 +205,57 @@
     .banner-p { 
         grid-area: banner-p;
         padding: 0rem 0rem 0rem 6rem;  
-        width: 745px; 
-        line-height: 27.58px; 
+        width: 57vw; 
         letter-spacing: 1.10px;
     }
-    .banner-img { grid-area: banner-img; }
+    .banner-img { 
+      grid-area: banner-img;
+    }
     
   
-  .values { 
-    grid-area: values; 
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
-    grid-auto-rows: 1fr;
-    gap: 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-    "crypto-1 crypto-2 crypto-3 crypto-4";
+  .slider { 
+    grid-area: slider; 
     background: #FFCEA1; 
     box-shadow: 2px 4px 8px 2px rgba(0, 0, 0, 0.25);
-    font-size: 14px; 
-    font-weight: 400;
+    overflow: hidden; 
 }
 
-.values span{
-    color: black;
+.slider .slider-track{
+  display: flex;
+  justify-content: space-between;
+  animation: scroll 50s linear infinite;
+  -webkit-animation: scroll 50s linear infinite;
 }
 
-.values h4{
-    font-weight: 800;
-    padding: 0.8rem;
+.slider span{
+  font-weight: 500;
 }
 
-.values img{
-  width: 5rem;
-  height: 5rem;
+.slider p{
+  font-weight: 700;
+  padding: 0.8rem;
+} 
+
+.slider h4{
+  margin: 0 1rem;
 }
 
-.crypto-1{ 
-  grid-area: crypto-1;
+.crypto{ 
   display: flex;
   justify-content: center; 
   align-items: center;
+  margin: 0rem 3rem;
 }
 
-.crypto-2{ 
-  grid-area: crypto-2;
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-}
-
-.crypto-3{ 
-  grid-area: crypto-3;
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-}
-
-.crypto-4{ 
-  grid-area: crypto-4;
-  display: flex;
-  justify-content: center; 
-  align-items: center;
+@keyframes scroll{
+  0%{
+    -webkit-transform: translateX(80%);
+    transform: translateX(80%);
+  }
+  100%{
+    -webkit-transform: translateX(-170%);
+    transform: translateX(-170%);
+  }
 }
 
   .advantages { 
