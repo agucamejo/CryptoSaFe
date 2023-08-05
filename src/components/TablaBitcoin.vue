@@ -100,6 +100,17 @@ export default {
 </script>
 
 <style scoped>
+button{
+  background: #000000;
+  color: #f5f5f5;
+  border: none;
+}
+
+
+h3{
+  margin-bottom: 1rem;
+}
+
 .arrow-up::after {
   content: '\2191'; /* Código unicode para la flecha hacia arriba */
 }
@@ -111,25 +122,47 @@ export default {
 table {
   width: 50%;
   border-collapse: collapse;
+  background-color: #00000093;
+  box-shadow: -1px 0px 25px 0px #133a4a69;
+  border-radius: 12px;
+  color: #f5f5f5;
 }
 
 td {
   padding: 3px;
   text-align: left;
-  border: 1px solid #ddd;
+  border-top: 2px solid #898787;
+  border-right: 2px solid #898787;
+}
+
+
+td:last-child{
+  border-right:  none;
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #000000;
   padding: 3px;
   text-align: center;
-  border: 1px solid #ddd;
+  color: #f5f5f5;
+  border: 2px solid rgb(0, 0, 0);
+  border-top: none;
+  border-right: 2px solid #898787;
+  border-bottom: 2px solid #898787;
+}
+
+th:last-child{
+  border-radius: 0px 12px 0px 0px;
+  border-right: none;
+}
+th:first-child{
+  border-radius: 12px 0px 0px 0px;
+  border-left: none;
 }
 
 tr:hover {
-  background-color: #f5f5f5;
+  background-color: #141414d3;
 }
-
 </style>
 
   
