@@ -39,7 +39,7 @@
         
         
         <div class="advantages">
-            <h2 class="advanteges-title" style="text-align: center; color: #00146B; font-size: 40px; padding-top: 4rem;">Tu libertad financiera al alcance de tu mano</h2>
+            <h2 class="advanteges-title" style="text-align: center; color: #00146B; font-size: 40px; padding-top: 4rem;">La libertad financiera al alcance de tu mano</h2>
             <div class="adventage-1">
                 <img class="photo-1" src="../assets/img/sell-change.png" />
                 <h4 class="title-1">Compra y venta de criptomonedas </h4>
