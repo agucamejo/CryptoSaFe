@@ -114,16 +114,22 @@ import axios from 'axios';
       const storedId = localStorage.getItem('id');
       const storedPassword = localStorage.getItem('password');
 
+      const currentDate = new Date();
+      const day = String(currentDate.getDate()).padStart(2, '0');
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const year = currentDate.getFullYear();
+      const hours = String(currentDate.getHours()).padStart(2, '0');
+      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+      const formattedDate = `${month}-${day}-${year} ${hours}:${minutes}:${seconds}`;
+
       // Comprobar si los campos coinciden con los almacenados en el localStorage
-      if (this.username === storedId && this.password === storedPassword) {
+      if (this.username.trim() === storedId && this.password.trim() === storedPassword) {
         // Validar que los datos sean correctos antes de la compra
         if (this.valorVenta <= 0 || this.valorPago <= 0) {
           alert('El monto y el valor deben ser mayores a 0.');
           return;
         }
-
-        const currentDate = new Date();
-        const formattedDate = this.formatDate(currentDate);
 
         // Realizar la compra y enviar la información al servidor para procesar la transacción.
         const transactionData = {
@@ -136,7 +142,6 @@ import axios from 'axios';
         };
 
         this.sendTransactionData(transactionData);
-        console.log(transactionData);
       } else {
         alert('Credenciales incorrectas. Inténtalo de nuevo.');
       }
@@ -169,15 +174,6 @@ import axios from 'axios';
           alert('Ha ocurrido un error al procesar la venta. Por favor, inténtelo de nuevo más tarde.');
         });
     },
-    formatDate(date) {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-
-      return `${day}-${month}-${year} ${hours}:${minutes}`;
-    }
     
   },
   };
