@@ -65,8 +65,6 @@
           <option value="usdc">USD Coin</option>
         </select>
 
-
-
         <button type="submit">Guardar Cambios</button>
       </form>
     </div>
@@ -97,6 +95,18 @@ export default {
       axios
         .get(apiUrl, { headers: { 'x-apikey': apiKey } })
         .then((response) => {
+          for (const obj of response.data) {
+            const dateObj = new Date(obj.datetime);
+            const day = dateObj.getDate().toString().padStart(2, "0");
+            const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+            const year = dateObj.getFullYear().toString();
+            const hours = dateObj.getUTCHours().toString().padStart(2, "0");
+            const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+            const seconds = dateObj.getSeconds().toString().padStart(2, "0");
+
+            const correctDateTime = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+            obj.datetime = correctDateTime;
+          }
           this.transactions = response.data;
         })
         .catch((error) => {
@@ -160,9 +170,11 @@ export default {
       const day = String(currentDate.getDate()).padStart(2, '0');
       const month = String(currentDate.getMonth() + 1).padStart(2, '0');
       const year = currentDate.getFullYear();
-      const formattedDate = `${month}-${day}-${year}`;
+      const hours = String(currentDate.getHours()).padStart(2, '0');
+      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+      const formattedDate = `${month}-${day}-${year} ${hours}:${minutes}:${seconds}`;
 
-      // Asignar la fecha formateada a la propiedad datetime del objeto editingTransaction
       this.editingTransaction.datetime = formattedDate;
 
       axios
