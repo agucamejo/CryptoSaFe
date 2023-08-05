@@ -34,7 +34,7 @@
         <RouterLink to="/help" @click="setActiveOption('ayuda')">Ayuda</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'salir' } ">
-        <RouterLink to="/" @click="setActiveOption('salir')" :style="'padding-right:10px'">Salir</RouterLink>
+        <RouterLink to="/" @click="clearActiveOption()" :style="'padding-right:10px'">Salir</RouterLink>
         <img src="./icons/left-icon.svg" alt="left icon">
       </li>
     </ul>
@@ -54,11 +54,13 @@ export default {
     const activeOptionStore = useActiveOptionStore();
     const activeOption = activeOptionStore.activeOption;
     const setActiveOption = activeOptionStore.setActiveOption;
+    const clearActiveOption = activeOptionStore.clearActiveOption;
     const authStore = useAuthStore();
 
     return {
       activeOption,
       setActiveOption,
+      clearActiveOption,
       username: authStore.id, 
     };
   },
