@@ -114,8 +114,17 @@ import axios from 'axios';
       const storedId = localStorage.getItem('id');
       const storedPassword = localStorage.getItem('password');
 
+      const currentDate = new Date();
+      const day = String(currentDate.getDate()).padStart(2, '0');
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const year = currentDate.getFullYear();
+      const hours = String(currentDate.getHours()).padStart(2, '0');
+      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+      const formattedDate = `${month}-${day}-${year} ${hours}:${minutes}:${seconds}`;
+
       // Comprobar si los campos coinciden con los almacenados en el localStorage
-      if (this.username === storedId && this.password === storedPassword) {
+      if (this.username.trim() === storedId && this.password.trim() === storedPassword) {
         // Validar que los datos sean correctos antes de la compra
         if (this.valorCompra <= 0 || this.valorPago <= 0) {
           alert('El monto y el valor deben ser mayores a 0.');
@@ -129,10 +138,11 @@ import axios from 'axios';
           crypto_code: this.monedaCompra,
           crypto_amount: this.valorCompra.toString(),
           money: this.valorPago.toString(),
-          datetime: new Date().toLocaleString('es-AR').replace(/\//g, '-'),
+          datetime: formattedDate,
         };
 
         this.sendTransactionData(transactionData);
+        console.log(transactionData)
       } else {
         alert('Credenciales incorrectas. Inténtalo de nuevo.');
       }
@@ -258,7 +268,7 @@ import axios from 'axios';
 
  
  .confirmation-overlay{
-  position: fixed;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;

@@ -11,5 +11,8 @@ export const useActiveOptionStore = defineStore('activeOption', {
       // Guardar la opción activa en localStorage
       localStorage.setItem('activeOption', option);
     },
+    clearActiveOption() {
+      this.activeOption = 'inicio';
+    },
   },
 });

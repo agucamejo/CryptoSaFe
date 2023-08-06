@@ -26,7 +26,6 @@
 import { defineComponent,ref } from 'vue';
 import { useAuthStore } from '../stores/login';
 import { useRouter } from 'vue-router';
-import apiClient from '../services/apiClient';
 
 export default defineComponent({
   setup() {
@@ -37,20 +36,23 @@ export default defineComponent({
     const router = useRouter();
 
     const submitForm = () => {
+      const idRegEx = /^[a-zA-Z0-9]+$/;
+      const passwordRegEx = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      
       if (id.value && password.value) {
+        if (!idRegEx.test(id.value)) {
+          alert('El nombre de usuario solo puede contener letras y números sin espacios ni caracteres especiales.');
+          return;
+        }
+
+        if(!passwordRegEx.test(password.value)){
+          alert('La contraseña es incorrecta');
+          console.log(password.value)
+          return;
+        }
+
         authStore.setCredentials(id.value, password.value);
         router.push({ name: 'home' });
-
-        const credentials = { id: id.value, password: password.value };
-        apiClient.login(credentials)
-          .then(response => {
-            // Aquí puedes manejar la respuesta de la solicitud de inicio de sesión
-            console.log(response.data); // Por ejemplo, imprimir la respuesta en la consola
-          })
-          .catch(error => {
-            // Aquí puedes manejar los errores de la solicitud de inicio de sesión
-            console.error(error);
-          });
       } else {
         alert('Por favor, completa ambos campos.');
       }
