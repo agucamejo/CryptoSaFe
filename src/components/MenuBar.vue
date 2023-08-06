@@ -8,37 +8,30 @@
       <li :class="{ active: activeOption === 'inicio' }">
         <img src="./icons/home-icon.svg" alt="home icon">
         <RouterLink to="/home" @click="setActiveOption('inicio')">Inicio</RouterLink>
-        <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'compras' }">
-        <img src="./icons/shopping-bag-icon.svg" alt="shopping bag icon">
-        <RouterLink to="/shopping" @click="setActiveOption('compras')">Compras</RouterLink>
-        <img src="./icons/arrow-right.svg" alt="arrow right icon">
+        <img src="./icons/purchase-bag-icon.svg" alt="purchase bag icon">
+        <RouterLink to="/purchase" @click="setActiveOption('compras')">Compras</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'ventas' }">
         <img src="./icons/tag-icon.svg" alt="tag icon">
-        <RouterLink to="/sells" @click="setActiveOption('ventas')">Ventas</RouterLink>
-        <img src="./icons/arrow-right.svg" alt="arrow right icon">
+        <RouterLink to="/sales" @click="setActiveOption('ventas')">Ventas</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'movimientos' }">
         <img src="./icons/movements-icon.svg" alt="movements icon">
         <RouterLink to="/movements" @click="setActiveOption('movimientos')">Movimientos</RouterLink>
-        <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'balance' }">
         <img src="./icons/chart-icon.svg" alt="chart icon">
         <RouterLink to="/balance" @click="setActiveOption('balance')">Balance</RouterLink>
-        <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'aprender' }">
         <img src="./icons/book-icon.svg" alt="book icon">
         <RouterLink to="/learn" @click="setActiveOption('aprender')">Aprender</RouterLink>
-        <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'ayuda' }">
         <img src="./icons/info-icon.svg" alt="info icon">
         <RouterLink to="/help" @click="setActiveOption('ayuda')">Ayuda</RouterLink>
-        <img src="./icons/arrow-right.svg" alt="arrow right icon">
       </li>
       <li :class="{ active: activeOption === 'salir' } ">
         <RouterLink to="/" @click="setActiveOption('salir')" :style="'padding-right:10px'">Salir</RouterLink>
@@ -46,23 +39,28 @@
       </li>
     </ul>
     <div class="menu-footer">
-      <p class="username">Nombre de Usuario</p>
+      <p class="username">{{ username }}</p>
       <img src="./icons/user-icon.svg" alt="user icon">
     </div>
   </div>
 </template>
 
 <script>
+import { useActiveOptionStore } from '../stores/menuBar.js';
+import { useAuthStore } from '../stores/login.js';
+
 export default {
-  data() {
+  setup() {
+    const activeOptionStore = useActiveOptionStore();
+    const activeOption = activeOptionStore.activeOption;
+    const setActiveOption = activeOptionStore.setActiveOption;
+    const authStore = useAuthStore();
+
     return {
-      activeOption: 'inicio', // Opción activa por defecto
+      activeOption,
+      setActiveOption,
+      username: authStore.id, 
     };
-  },
-  methods: {
-    setActiveOption(option) {
-      this.activeOption = option;
-    },
   },
 };
 </script>
@@ -71,8 +69,11 @@ export default {
 
 li{
   display: flex;
-  justify-content: space-between;
-  flex-direction: row;
+  align-items: center;
+}
+
+.vertical-menu li img{
+  margin: 0rem 2rem 0rem 1rem;
 }
 
 .menu-header{
@@ -89,7 +90,7 @@ li{
   position: fixed;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 250px;
   height: 100%;
   background-color: #f1f1f1;
   border-radius: 0px 10px 10px 0px;
@@ -110,6 +111,10 @@ li{
   border-bottom: none;
   display: flex;
   justify-content: flex-end;
+}
+
+.vertical-menu li:last-child img {
+   margin: 0rem;
 }
 
 .vertical-menu a {

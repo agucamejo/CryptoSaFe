@@ -10,11 +10,10 @@
 
 <style>
 footer{
-    border-top: 1px solid #ddd;
-    width: 80%;
-    position: absolute;
-    bottom:0;
-    padding: 0.44rem 0rem 0rem 0rem;
+    border-top: 1.2px solid #8c8c8c;
+    width: 95%;
+    padding: 0.52rem 0rem 0rem 0rem;
+    margin: 1rem 0rem 0rem 0rem;
     text-align: center;
 }
 
