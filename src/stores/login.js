@@ -13,6 +13,7 @@ export const useAuthStore = defineStore('auth', {
       // Guardar ID y contraseña en localStorage
       localStorage.setItem('id', id);
       localStorage.setItem('password', password);
+      localStorage.setItem('activeOption', 'inicio');
     },
   },
 });

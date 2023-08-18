@@ -29,10 +29,6 @@
         <img src="./icons/book-icon.svg" alt="book icon">
         <RouterLink to="/learn" @click="setActiveOption('aprender')">Aprender</RouterLink>
       </li>
-      <li :class="{ active: activeOption === 'ayuda' }">
-        <img src="./icons/info-icon.svg" alt="info icon">
-        <RouterLink to="/help" @click="setActiveOption('ayuda')">Ayuda</RouterLink>
-      </li>
       <li :class="{ active: activeOption === 'salir' } ">
         <RouterLink to="/" @click="clearActiveOption()" :style="'padding-right:10px'">Salir</RouterLink>
         <img src="./icons/left-icon.svg" alt="left icon">

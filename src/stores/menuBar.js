@@ -8,7 +8,6 @@ export const useActiveOptionStore = defineStore('activeOption', {
     setActiveOption(option) {
       this.activeOption = option;
 
-      // Guardar la opción activa en localStorage
       localStorage.setItem('activeOption', option);
     },
     clearActiveOption() {

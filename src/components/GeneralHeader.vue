@@ -19,7 +19,6 @@
 import { useActiveOptionStore } from '../stores/menuBar';
 
 export default {
-  // ...
   setup() {
     const activeOptionStore = useActiveOptionStore();
     const activeOption = activeOptionStore.activeOption;
