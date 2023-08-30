@@ -7,7 +7,6 @@ export const useActiveOptionStore = defineStore('activeOption', {
   actions: {
     setActiveOption(option) {
       this.activeOption = option;
-
       localStorage.setItem('activeOption', option);
     },
     clearActiveOption() {

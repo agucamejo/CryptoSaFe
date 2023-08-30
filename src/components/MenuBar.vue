@@ -1,37 +1,37 @@
 <template>
   <div class="vertical-menu">
     <div class="menu-header">
-      <img src="./icons/logo-cryptosafe.svg" alt="Logo CryptoSaFe" class="menu-logo" />
-      <p class="titulos" :style="'color:#F7931A'">Crypto</p><p class="titulos" :style="'color:#00146B'">SaFe</p>
+      <img src="./icons/logo-cryptosafe.svg" alt="Logo CryptoSaFe" class="menu-logo" title="CryptoSaFe"/>
+      <p class="titles logo-crypto">Crypto</p><p class="titles logo-safe">SaFe</p>
     </div>
     <ul>
       <li :class="{ active: activeOption === 'inicio' }">
-        <img src="./icons/home-icon.svg" alt="home icon">
+        <img src="./icons/home-icon.svg" alt="Icono de inicio" title="Inicio">
         <RouterLink to="/home" @click="setActiveOption('inicio')">Inicio</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'compras' }">
-        <img src="./icons/purchase-bag-icon.svg" alt="purchase bag icon">
+        <img src="./icons/purchase-bag-icon.svg" alt="Icono de compras" title="Compras">
         <RouterLink to="/purchase" @click="setActiveOption('compras')">Compras</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'ventas' }">
-        <img src="./icons/tag-icon.svg" alt="tag icon">
+        <img src="./icons/tag-icon.svg" alt="Icono de ventas" title="Ventas">
         <RouterLink to="/sales" @click="setActiveOption('ventas')">Ventas</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'movimientos' }">
-        <img src="./icons/movements-icon.svg" alt="movements icon">
+        <img src="./icons/movements-icon.svg" alt="Icono de intercambio" title="Movimientos">
         <RouterLink to="/movements" @click="setActiveOption('movimientos')">Movimientos</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'balance' }">
-        <img src="./icons/chart-icon.svg" alt="chart icon">
+        <img src="./icons/chart-icon.svg" alt="Icono de estadísticas" title="Balance">
         <RouterLink to="/balance" @click="setActiveOption('balance')">Balance</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'aprender' }">
-        <img src="./icons/book-icon.svg" alt="book icon">
+        <img src="./icons/book-icon.svg" alt="Icono de libro" title="Aprender">
         <RouterLink to="/learn" @click="setActiveOption('aprender')">Aprender</RouterLink>
       </li>
       <li :class="{ active: activeOption === 'salir' } ">
         <RouterLink to="/" @click="clearActiveOption()" :style="'padding-right:10px'">Salir</RouterLink>
-        <img src="./icons/left-icon.svg" alt="left icon">
+        <img src="./icons/left-icon.svg" alt="left icon" title="Salir">
       </li>
     </ul>
     <div class="menu-footer">
@@ -75,7 +75,6 @@ li{
 }
 
 .menu-header{
-  display: flex;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -88,7 +87,7 @@ li{
   position: fixed;
   top: 0;
   left: 0;
-  width: 250px;
+  width: 260px;
   height: 100%;
   background-color: #f1f1f1;
   border-radius: 0px 10px 10px 0px;
@@ -112,7 +111,7 @@ li{
 }
 
 .vertical-menu li:last-child img {
-   margin: 0rem;
+  margin: 0rem;
 }
 
 .vertical-menu a {
@@ -136,7 +135,6 @@ li{
   justify-content: space-evenly;
   flex-wrap: nowrap;
   border-bottom-right-radius: 10px;
-  
 }
 
 .username {

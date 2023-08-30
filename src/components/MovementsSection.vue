@@ -17,12 +17,12 @@
           <td>{{ transaction.datetime }}</td>
           <td>{{ transaction.action.toUpperCase() }}</td>
           <td>{{ transaction.crypto_code.toUpperCase() }}</td>
-          <td>{{ transaction.crypto_amount }}</td>
-          <td>{{ transaction.money }}</td>
+          <td>{{ formattedNumber(parseFloat(transaction.crypto_amount)) }}</td>
+          <td><b>$</b> {{ formattedNumber(parseFloat(transaction.money)) }}</td>
           <td>
-            <img src="./icons/read-icon.svg" alt="read icon" title="Ver detalles" @click="verDetalles(transaction)">
-            <img src="./icons/edit-icon.svg" alt="edit icon" title="Editar" @click="editarTransaccion(transaction)">
-            <img src="./icons/trash-bin-icon.svg" alt="trash bin icon" title="Eliminar" @click="eliminarTransaccion(transaction)">
+            <img src="./icons/read-icon.svg" alt="Icono de lectura" title="Ver detalles" @click="seeDetails(transaction)">
+            <img src="./icons/edit-icon.svg" alt="Icono de edición" title="Editar" @click="editTransaction(transaction)">
+            <img src="./icons/trash-bin-icon.svg" alt="Icono de eliminar" title="Eliminar" @click="deleteTransaction(transaction)">
           </td>
         </tr>
       </tbody>
@@ -30,27 +30,25 @@
     <div v-else>No hay transacciones registradas para este usuario.</div>
     <div v-if="showDetailsModal" class="modal">
       <div class="modal-content">
-        <!-- Contenido de los detalles de la transacción -->
+        <h4>Ver Transacción</h4>
         <p>Fecha y Hora: {{ selectedTransaction.datetime }}</p>
-        <p>Acción: {{ selectedTransaction.action }}</p>
+        <p>Acción: {{ selectedTransaction.action.toUpperCase() }}</p>
         <p>Código de criptomoneda: {{ selectedTransaction.crypto_code.toUpperCase() }}</p>
-        <p>Cantidad de criptomoneda: {{ selectedTransaction.crypto_amount }}</p>
-        <p>Monto en Pesos Argentinos: {{ selectedTransaction.money }}</p>
+        <p>Cantidad de criptomoneda: {{ formattedNumber(parseFloat(selectedTransaction.crypto_amount)) }}</p>
+        <p>Monto en Pesos Argentinos: <b>$</b> {{ formattedNumber(parseFloat(selectedTransaction.money)) }}</p>
 
-        <!-- Opción para salir del cuadro modal -->
-        <button @click="closeDetailsModal">Salir</button>
+        <button @click="closeModal">Salir</button>
       </div>
     </div>
-    <div v-if="editingTransaction">
-      <h3>Editar Transacción</h3>
-      <form @submit.prevent="guardarEdicion">
-        <!-- Campos del formulario para editar la transacción -->
-        <!-- Otros campos de edición, por ejemplo: -->
+    
+    <div v-if="editingTransaction" class="modal">
+      <form @submit.prevent="saveEditedData" class="modal-content">
+        <h4>Editar Transacción</h4>
         <label>Transacción:</label>
         <select v-model="editingTransaction.action">
           <option value="purchase">Compra</option>
           <option value="sales">Venta</option>
-        </select>
+        </select> <br>
 
         <label>Criptomoneda:</label>
         <select v-model="editingTransaction.crypto_code">
@@ -63,16 +61,39 @@
           <option value="sol">Solana</option>
           <option value="usdt">Tether</option>
           <option value="usdc">USD Coin</option>
-        </select>
+        </select><br>
 
+        <label>Monto de criptomoneda:</label>
+        <input type="number" v-model="editingTransaction.crypto_amount" step="0.01"/><br>
+
+        <label>Valor en pesos:</label>
+        <input type="number" v-model="editingTransaction.money" step="0.01"/>
         <button type="submit">Guardar Cambios</button>
+        <button @click="closeModal">Salir</button>
       </form>
+    </div>
+
+    <div v-if="showConfirmationModal" class="modal">
+      <div class="modal-content">
+        <p>¿Estás seguro de que deseas eliminar esta transacción?</p>
+        <button @click="confirmDelete">Eliminar</button>
+        <button @click="showConfirmationModal = false">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="modal" v-if="showModal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <p>{{ modalMessage }}</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { getTransactionsByUserId, getTransactionDetails, deleteTransaction, updateTransaction } from '@/services/apiClient';
+import { sendFormattedDate, getFormattedDate } from './methods/correctDate';
+import { formattedNumber } from './methods/correctNumber';
 
 export default {
   data() {
@@ -82,188 +103,133 @@ export default {
       showDetailsModal: false,
       selectedTransaction: null,
       editingTransaction: null,
+      showModal: false,
+      showConfirmationModal: false,
+      modalMessage: '',
+      formattedNumber: formattedNumber,
     };
   },
-  mounted() {
-    this.fetchTransactionHistory();
+  async mounted() {
+    await this.fetchTransactionHistory();
   },
   methods: {
-    fetchTransactionHistory() {
-      const apiUrl = `https://laboratorio3-f36a.restdb.io/rest/transactions?q={"user_id": "${this.userId}"}`;
-      const apiKey = '60eb09146661365596af552f';
-
-      axios
-        .get(apiUrl, { headers: { 'x-apikey': apiKey } })
-        .then((response) => {
-          for (const obj of response.data) {
-            const dateObj = new Date(obj.datetime);
-            const day = dateObj.getDate().toString().padStart(2, "0");
-            const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
-            const year = dateObj.getFullYear().toString();
-            const hours = dateObj.getUTCHours().toString().padStart(2, "0");
-            const minutes = dateObj.getMinutes().toString().padStart(2, "0");
-            const seconds = dateObj.getSeconds().toString().padStart(2, "0");
-
-            const correctDateTime = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-            obj.datetime = correctDateTime;
-          }
-          this.transactions = response.data;
-        })
-        .catch((error) => {
-          console.error(error);
-          alert('Ha ocurrido un error al cargar el historial de transacciones.');
-        });
+    async fetchTransactionHistory() {
+      try {
+        const response = await getTransactionsByUserId(this.userId);
+        for (const obj of response.data) {
+          const correctDateTime = getFormattedDate(new Date(obj.datetime));
+          obj.datetime = correctDateTime;
+        }
+        this.transactions = response.data;
+      } catch (error) {
+        this.modalMessage = 'Ha ocurrido un error al cargar el historial de transacciones. Intentelo de nuevo más tarde';
+        this.showModal = true;
+      }
     },
-    verDetalles(transaction) {
-      // Realizar una solicitud GET para obtener detalles de la transacción
-      const apiUrl = `https://laboratorio3-f36a.restdb.io/rest/transactions/${transaction._id}`;
-      const apiKey = '60eb09146661365596af552f';
-
-      axios
-        .get(apiUrl, { headers: { 'x-apikey': apiKey } })
-        .then(() => {
-          this.selectedTransaction = transaction;
-          this.showDetailsModal = true;
-        })
-        .catch((error) => {
-          console.error(error);
-          alert('Ha ocurrido un error al obtener los detalles de la transacción.');
-        });
+    async seeDetails(transaction) {
+      try {
+        const response = await getTransactionDetails(transaction._id);
+        this.selectedTransaction = response.data;
+        const formattedDate = getFormattedDate(new Date(this.selectedTransaction.datetime));
+        this.selectedTransaction.datetime = formattedDate;
+        this.showDetailsModal = true;
+      } catch (error) {
+        this.modalMessage = 'Ha ocurrido un error al obtener los detalles de la transacción.';
+        this.showModal = true;
+      }
     },
-
-    closeDetailsModal() {
-      // Ocultar el cuadro modal y restablecer la transacción seleccionada
+    closeModal() {
       this.showDetailsModal = false;
+      this.editingTransaction = null;
       this.selectedTransaction = null;
     },
 
-    editarTransaccion(transaction) {
+    editTransaction(transaction) {
       this.editingTransaction = { ...transaction};
     },
 
-    eliminarTransaccion(transaction) {
-      // Realizar una solicitud DELETE para eliminar la transacción
-      const apiUrl = `https://laboratorio3-f36a.restdb.io/rest/transactions/${transaction._id}`;
-      const apiKey = '60eb09146661365596af552f';
-
-      axios
-        .delete(apiUrl, {headers: {'x-apikey': apiKey }})
-        .then(() => {
-          // Eliminar la transacción de la lista transactions
-          const index = this.transactions.findIndex((item) => item._id === transaction._id);
-          if (index !== -1) {
-            this.transactions.splice(index, 1);
-          }
-          // Opcional: Puedes mostrar un mensaje de éxito o realizar otras acciones después de eliminar la transacción
-          alert('Transacción eliminada exitosamente.');
-        })
-        .catch((error) => {
-          console.error(error);
-          alert('Ha ocurrido un error al eliminar la transacción.');
-        });
+    deleteTransaction(transaction) {
+      this.showConfirmationModal = true;
+      this.selectedTransactionToDelete = transaction;
     },
-    guardarEdicion() {
-      const apiUrl = `https://laboratorio3-f36a.restdb.io/rest/transactions/${this.editingTransaction._id}`;
-      const apiKey = '60eb09146661365596af552f';
+    async confirmDelete() {
+      try {
+        await deleteTransaction(this.selectedTransactionToDelete._id);
+        const index = this.transactions.findIndex((item) => item._id === this.selectedTransactionToDelete._id);
+        if (index !== -1) {
+          this.transactions.splice(index, 1);
+        }
+        
+        this.modalMessage = 'Transacción eliminada con éxito.';
+        this.showModal = true;
 
-      const currentDate = new Date();
-      const day = String(currentDate.getDate()).padStart(2, '0');
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const year = currentDate.getFullYear();
-      const hours = String(currentDate.getHours()).padStart(2, '0');
-      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-      const formattedDate = `${month}-${day}-${year} ${hours}:${minutes}:${seconds}`;
+        this.selectedTransactionToDelete = null;
+        this.showConfirmationModal = false;
+      } catch (error) {
+        this.modalMessage = 'Ha ocurrido un error al eliminar la transacción.';
+        this.showModal = true;
 
-      this.editingTransaction.datetime = formattedDate;
+        this.selectedTransactionToDelete = null;
+        this.showConfirmationModal = false;
+      }
+    },
+    async saveEditedData() {
+      try {
+        const formattedDate = sendFormattedDate(new Date());
+        this.editingTransaction.datetime = formattedDate;
 
-      axios
-        .patch(apiUrl, this.editingTransaction, { headers: { 'x-apikey': apiKey } })
-        .then(() => {
-          
-          // Actualizar la lista de transacciones después de guardar los cambios
-          this.fetchTransactionHistory();
-          
-          // Limpiar la transacción en edición después de guardar los cambios
-          this.editingTransaction = null;
-        })
-        .catch((error) => {
-          console.error(error);
-          alert('Ha ocurrido un error al guardar los cambios.');
-        });
+        const updatedData = {
+          action: this.editingTransaction.action,
+          crypto_code: this.editingTransaction.crypto_code,
+          crypto_amount: this.editingTransaction.crypto_amount,
+          money: this.editingTransaction.money,
+          datetime: this.editingTransaction.datetime,
+          user_id: this.userId,
+        };
+
+        await updateTransaction(this.editingTransaction._id, updatedData);
+        await this.fetchTransactionHistory();
+        this.modalMessage = 'Los cambios se guardaron correctamente.';
+        this.showModal = true;
+        this.editingTransaction = null;
+      } catch (error) {
+        this.modalMessage = 'Ha ocurrido un error al guardar los cambios.';
+        this.showModal = true;
+      }
     },
   },
 };
 </script>
-<style scoped>
 
+<style scoped>
 img{
   cursor: pointer;
   margin: 0.1rem;
 }
 
 table {
-  width: 80%;
-  margin: 1rem 0rem 0rem 2rem;
-  border-collapse: collapse;
-  background-color: #eee9e993;
-  box-shadow: -1px 0px 25px 0px #133a4a69;
+  width: 90%;
+  margin-left: 1.5rem;
+}
+
+input{
   border-radius: 12px;
-  text-align: center;
+  border: 0.1rem solid #8f89f6;
+  margin: 0.2rem 0.6rem;
+  padding: 0.5rem;
 }
 
-td {
-  padding: 3px;
-  border-top: 2px solid #898787;
-  border-right: 2px solid #898787;
+select{
+  margin: 0.2rem 0.6rem;
 }
 
-
-td:last-child{
-  border-right:  none;
-}
-
-
-th {
-  background-color: #000000;
-  padding: 3px;
-  color: #f5f5f5;
-  border: 2px solid rgb(0, 0, 0);
-  border-top: none;
-  border-right: 2px solid #898787;
-  border-bottom: 2px solid #898787;
-}
-
-th:last-child{
-  border-radius: 0px 12px 0px 0px;
-  border-right: none;
-}
-th:first-child{
-  border-radius: 12px 0px 0px 0px;
-  border-left: none;
-}
-/* tr:hover {
-  background-color: #1414148f;
-} */
-
-/* Estilos generales */
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-}
-
-.modal-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+button{
+  background: rgba(0, 10.20, 255, 0.27); 
+  border-radius: 12px;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 1rem 3.18rem 0rem 3.18rem;
 }
 </style>

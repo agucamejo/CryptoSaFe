@@ -1,310 +1,176 @@
 <template>
-    <div>
-        <div class="container">
-            <div class="selects">
-                <div id="select-compra">
-                    <p>Moneda a comprar:</p>
-                    <select v-model="monedaCompra" @change="fetchData">
-                        <option value="bnb">Binance Coin</option>
-                        <option value="btc">Bitcoin</option>
-                        <option value="busd">Binance USD</option>
-                        <option value="dai">DAI</option>
-                        <option value="eth">Ethereum</option>
-                        <option value="matic">MATIC</option>
-                        <option value="sol">Solana</option>
-                        <option value="usdt">Tether</option>
-                        <option value="usdc">USD Coin</option>
-                    </select>
-                </div>
+  <div class="purchase-sales-main">
+    <div class="selects">
+      <div id="select-compra">
+        <p>Moneda a comprar:</p>
+        <select v-model="purchaseCoin" @change="fetchExchangeData">
+          <option value="bnb">Binance Coin</option>
+          <option value="btc">Bitcoin</option>
+          <option value="busd">Binance USD</option>
+          <option value="dai">DAI</option>
+          <option value="eth">Ethereum</option>
+          <option value="matic">MATIC</option>
+          <option value="sol">Solana</option>
+          <option value="usdt">Tether</option>
+          <option value="usdc">USD Coin</option>
+        </select>
+      </div>
                 
-                <div id="select-pago">
-                    <p>Moneda de pago:</p>
-                    <select v-model="monedaPago" @change="fetchData">
-                        <option value="ars">$ARS</option>
-                        <option value="usd">US$</option>
-                    </select>
-                </div>
-            </div>
-            <div v-if="loading">Cargando...</div>
-            <div class="calculator" v-else>
-                <div class="converter">
-                    <p>Monto a comprar de {{ monedaCompra.toUpperCase() }}:</p>
-                    <input type="number" v-model="valorCompra" @input="convertirMonedaCompra" />
-                    <p :style="'margin-top: 2rem'">Equivale a {{ monedaPago.toUpperCase() }}:</p>
-                    <input type="number" v-model="valorPago" @input="convertirMonedaPago"/>
-                </div>
-                <div class="bill">
-                    <h3>Resumen de compra</h3>
-                    <div class="details">
-                      <p>Valor en {{ monedaPago.toUpperCase() }} :</p>
-                      <p>{{ 1.00 }}</p>
-                    </div>
-                    <div class="details">
-                      <p>Equivalente en {{ (monedaCompra.toUpperCase()) }} :</p>
-                      <p v-if="data">{{ data.ask }}</p>
-                    </div>
-                    <div class="details">
-                      <p>Compra de {{ monedaCompra.toUpperCase() }} :</p>
-                      <p>{{ valorCompra }}</p>
-                    </div>
-                    <div class="details">
-                      <p>Equivalente en ${{ monedaPago.toUpperCase() }} sin comisiones :</p>
-                      <p>{{ (valorCompra * data.ask) }}</p>
-                    </div>
-                    <hr>
-                    <div class="details">
-                      <p>Total a pagar: (comisiones incluídas)</p>
-                      <p>{{ (valorCompra * data.totalAsk) }}</p>
-                    </div>
-
-                    <button type="submit" @click="showConfirmation = true">Confirmar compra</button>
-                </div>
-            </div>
-            <div v-if="showConfirmation" class="confirmation-overlay">
-                <div class="confirmation-form">
-                  <button class="close-button" @click="showConfirmation = false">X</button>
-                    <input type="text" v-model="username" placeholder="ID de usuario" />
-                    <input type="password" v-model="password" placeholder="Contraseña" />
-                    <button @click="validateAndConfirm" class="confirmation-button">Finalizar compra</button>
-                </div>
-            </div>
+      <div id="select-pago">
+        <p>Moneda de pago:</p>
+        <select v-model="paymentCoin" @change="fetchExchangeData">
+          <option value="ars">$ARS</option>
+          <!-- <option value="usd">US$</option> -->
+        </select>
       </div>
     </div>
-  </template>
-  
-  <script>
-import { ref } from 'vue';
-import axios from 'axios';
 
-  export default {
-    data() {
-      return {
-        monedaCompra: 'btc',
-        monedaPago: 'ars',
-        data: null,
-        loading: true,
-        valorCompra: ref(''),
-        valorPago: ref(''),
-        showConfirmation: false,
-        username: '',
-        password: '',
-      };
+    <div v-if="loading">Cargando...</div>
+    <div class="calculator" v-else>
+      <div class="converter">
+        <p>Monto a comprar de {{ purchaseCoin.toUpperCase() }}:</p>
+        <input type="number" v-model="purchaseValue" @input="convertPurchaseCoin"/>
+        <p :style="'margin-top: 2rem'">Equivale a {{ paymentCoin.toUpperCase() }}:</p>
+        <input type="number" v-model="paymentValue" @input="convertPaymantCoin"/>
+      </div>
+      <div class="bill">
+        <h3>Resumen de compra</h3>
+        <div class="details">
+          <p>Valor en {{ paymentCoin.toUpperCase() }} :</p>
+          <p><b>$</b> 1,00</p>
+        </div>
+        <div class="details">
+          <p>Equivalente en {{ (purchaseCoin.toUpperCase()) }} :</p>
+          <p v-if="data"><b>$</b> {{ formattedNumber(data.ask) }}</p>
+        </div>
+        <div class="details">
+          <p>Compra de {{ purchaseCoin.toUpperCase() }} :</p>
+          <p><b>$</b> {{ formattedNumber(purchaseValue) }}</p>
+        </div>
+        <div class="details">
+          <p>Equivalente en ${{ paymentCoin.toUpperCase() }} sin comisiones :</p>
+          <p><b>$</b> {{ formattedNumber((purchaseValue * data.ask)) }}</p>
+        </div>
+        <hr>
+        <div class="details">
+          <p>Total a pagar: (comisiones incluídas)</p>
+          <p><b>$</b> {{ formattedNumber((purchaseValue * data.totalAsk)) }}</p>
+        </div>
+
+        <button type="submit" @click="showConfirmation = true">Confirmar compra</button>
+      </div>
+    </div>
+
+    <div v-if="showConfirmation" class="confirmation-overlay">
+      <div class="confirmation-form">
+        <button class="close" @click="showConfirmation = false">&times;</button>
+        <input type="text" v-model="username" placeholder="ID de usuario" />
+        <input type="password" v-model="password" placeholder="Contraseña" />
+        <button @click="validateAndConfirm" class="confirmation-button">Finalizar compra</button>
+      </div>
+    </div>
+
+    <div class="modal" v-if="showModal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <p>{{ modalMessage }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+  
+<script>
+import { ref } from 'vue';
+import { postTransaction } from '../services/apiClient';
+import { sendFormattedDate } from './methods/correctDate';
+import { formattedNumber } from './methods/correctNumber';
+
+export default {
+  data() {
+    return {
+      purchaseCoin: 'btc',
+      paymentCoin: 'ars',
+      data: null,
+      loading: true,
+      purchaseValue: ref(''),
+      paymentValue: ref(''),
+      showConfirmation: false,
+      username: '',
+      password: '',
+      showModal: false,
+      modalMessage: '',
+      formattedNumber: formattedNumber,
+    };
+  },
+  async mounted() {
+    await this.fetchExchangeData();
+  },
+  methods: {
+    async fetchExchangeData() {
+      try {
+        const response = await fetch(`https://criptoya.com/api/tiendacrypto/${this.purchaseCoin}/${this.paymentCoin}/0.1`);
+        const data = await response.json();
+        this.loading = false;
+        this.data = data;
+      } catch (error) {
+        console.error(error);
+      }
     },
-    mounted() {
-      this.fetchData();
+    convertPurchaseCoin() {
+      this.paymentValue = this.purchaseValue * this.data.ask;
     },
-    methods: {
-      fetchData() {
-        const URL = `https://criptoya.com/api/tiendacrypto/${this.monedaCompra}/${this.monedaPago}/0.1`
-        fetch(URL)
-          .then(response => response.json())
-          .then(data => {
-            this.loading = false;
-            this.data = data;
-          })
-          .catch((error) => console.error(error));
-      },
-      convertirMonedaCompra() {
-        this.valorPago = this.valorCompra * this.data.ask;
-      },
-      convertirMonedaPago() {
-        this.valorCompra = this.valorPago / this.data.ask;
-      },
-      validateAndConfirm() {
+    convertPaymantCoin() {
+      this.purchaseValue = this.paymentValue / this.data.ask;
+    },
+    async validateAndConfirm() {
       const storedId = localStorage.getItem('id');
       const storedPassword = localStorage.getItem('password');
+      const formattedDate = sendFormattedDate(new Date());
 
-      const currentDate = new Date();
-      const day = String(currentDate.getDate()).padStart(2, '0');
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const year = currentDate.getFullYear();
-      const hours = String(currentDate.getHours()).padStart(2, '0');
-      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-      const formattedDate = `${month}-${day}-${year} ${hours}:${minutes}:${seconds}`;
-
-      // Comprobar si los campos coinciden con los almacenados en el localStorage
       if (this.username.trim() === storedId && this.password.trim() === storedPassword) {
-        // Validar que los datos sean correctos antes de la compra
-        if (this.valorCompra <= 0 || this.valorPago <= 0) {
-          alert('El monto y el valor deben ser mayores a 0.');
+        if (this.purchaseValue <= 0 || this.paymentValue <= 0) {
+          this.modalMessage = 'El monto y el valor deben ser mayores a 0.';
+          this.showModal = true;
           return;
         }
 
-        // Realizar la compra y enviar la información al servidor para procesar la transacción.
         const transactionData = {
           user_id: this.username,
           action: 'purchase',
-          crypto_code: this.monedaCompra,
-          crypto_amount: this.valorCompra.toString(),
-          money: this.valorPago.toString(),
+          crypto_code: this.purchaseCoin,
+          crypto_amount: this.purchaseValue.toString(),
+          money: this.paymentValue.toString(),
           datetime: formattedDate,
         };
 
-        this.sendTransactionData(transactionData);
-        console.log(transactionData)
+        try {
+          await this.sendTransactionData(transactionData);
+        } catch (error) {
+          console.error(error);
+        }
       } else {
-        alert('Credenciales incorrectas. Inténtalo de nuevo.');
+        this.modalMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
+        this.showModal = true;
       }
     },
+    async sendTransactionData(transactionData) {
+      try {
+        await postTransaction(transactionData);
+        this.purchaseCoin = 'btc';
+        this.paymentCoin = 'ars';
+        this.purchaseValue = '';
+        this.paymentValue = '';
+        this.showConfirmation = false;
+        this.username = '';
+        this.password = '';
 
-    // Método para realizar la solicitud POST a la API de transacciones
-    sendTransactionData(transactionData) {
-      const apiUrl = 'https://laboratorio3-f36a.restdb.io/rest/transactions';
-      const apiKey = '60eb09146661365596af552f';
-
-      axios
-        .post(apiUrl, transactionData, {
-          headers: { 'x-apikey': apiKey },
-        })
-        .then(() => {
-          // Si la solicitud es exitosa, restablecer los valores predeterminados
-          this.monedaVenta = 'btc';
-          this.monedaPago = 'ars';
-          this.valorVenta = '';
-          this.valorPago = '';
-          this.showConfirmation = false;
-          this.username = '';
-          this.password = '';
-
-          alert('Su compra fue ejecutada con éxito!!!');
-        })
-        .catch((error) => {
-          console.error(error);
-          alert('Ha ocurrido un error al procesar la compra. Por favor, inténtelo de nuevo más tarde.');
-        });
+        this.modalMessage = '¡Su compra fue ejecutada con éxito!';
+        this.showModal = true;
+      } catch (error) {
+        this.modalMessage = 'Ha ocurrido un error al procesar la compra. Por favor, inténtelo de nuevo más tarde.';
+        this.showModal = true;
+      }
     },
-  }
-  };
-  </script>
-  
-  <style scoped>
-
-.container {  display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 0.5fr 1.5fr;
-    grid-auto-columns: 1fr;
-    grid-auto-rows: 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-    "selects"
-    "calculator";
-  }
-
-.container select{
-  background: linear-gradient(91deg, rgba(0, 10.20, 255, 0.28) 0%, rgba(255, 123, 0, 0.281) 100%);
-  border-radius: 12px;
-  padding: 0.5rem 1.3rem;
-  border: none;
-}
-.container select:focus{
-  outline: none;
-}
-
-.container input{
-  background: #FFFFFF;
-  border-radius: 12px;
-  border: none;
-  padding: 0.5rem;
-}
-.container input:focus{
-  outline: none;
-}
-
-  .selects { 
-    grid-area: selects;
-    display: flex;
-    justify-content: space-around;
- }
-
-  .calculator {  display: grid;
-    grid-template-columns: 0.5fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-      "converter bill"
-      "converter bill"
-      "converter bill";
-    grid-area: calculator;
-    background: linear-gradient(180deg, rgba(0, 10.20, 255, 0.28) 0%, rgba(255, 123, 0, 0.281) 100%);
-    border-radius: 12px;
-    padding: 1rem;
-    margin: 1rem 4rem 0rem 0rem;
-  }
-
-  .converter { 
-    grid-area: converter;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-  }
-
-  .bill { 
-    grid-area: bill;
-    background: #FFF;
-    border-radius: 12px;
-    padding: 1rem;
-    display: grid;
-    align-content: center;
-  }
-
-  .bill button{
-    margin: auto;
-    background: rgba(0, 10.20, 255, 0.27); 
-    border-radius: 12px;
-    border: none;
-    padding: 0.5rem 1rem;
-    font-weight: 700;
-  }
-
- .details{
-    display: flex;
-    justify-content: space-between;
-    padding: 0.3rem 1rem;
- }
-
- 
- .confirmation-overlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.6); /* Add some transparency to make it look like an overlay */
-    z-index: 9999;
- }
-
- .confirmation-form{
-    display: grid;
-    align-items: center;
-    justify-items: center;
-    grid-gap: 1rem;
-    background: #000000;
-    padding: 2rem;
-    border-radius: 12px;
- }
-
- .confirmation-button {
-    margin: auto;
-    background: rgba(252, 169, 36, 0.84);  
-    border-radius: 12px;
-    border: none;
-    padding: 0.5rem 1rem;
-    font-weight: 700;
-    cursor: pointer;
- }
-
- .close-button {
-    color: white;
-    background: none;
-    border: none;
-    font-size: 15px;
-    cursor: pointer;
-  }
-  </style>
+  },
+};
+</script>
