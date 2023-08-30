@@ -1,4 +1,4 @@
-# CryptoSaFe - Gestión Avanzada de Criptomonedas con Vue.js 
+# CryptoSaFe - Gestión de Criptomonedas con Vue.js 
 
 ¡Bienvenido al repositorio de CryptoSaFe! Este proyecto ofrece una solución integral para gestionar criptomonedas de manera efectiva, desarrollada con Vue.js. CryptoSaFe no solo te permite realizar un seguimiento en tiempo real de tus inversiones en crypto, sino que también te brinda herramientas visuales y funcionales para tomar decisiones informadas. 
 
