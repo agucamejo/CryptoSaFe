@@ -2,18 +2,8 @@
 import MenuBar from '../components/MenuBar.vue'
 import GeneralFooter from '../components/GeneralFooter.vue'
 import GeneralHeader from '../components/GeneralHeader.vue';
-import TablaBitcoin from "../components/TablaBitcoin.vue";
-
+import CryptosAnalitycsTable from "../components/CryptosAnalitycsTable.vue";
 </script>
-<script>
-export default {
-  components: {
-    TablaBitcoin
-  },
-};
-
-</script>
-
 
 <template>
   <div class="container">
@@ -21,40 +11,36 @@ export default {
     <div class="section-name"><GeneralHeader></GeneralHeader></div>
     <div class="menu"><MenuBar></MenuBar></div>
     <div class="main-content">
-      <TablaBitcoin />
+      <CryptosAnalitycsTable />
     </div>
     <div class="footer"><GeneralFooter></GeneralFooter></div>
   </div>
 </template>
 
 <style scoped>
-.container {  display: grid;
-    grid-template-columns: 0.4fr 1.6fr;
-    grid-template-rows: 0.5fr 1fr 0.5fr 2fr 1fr auto;
-    grid-auto-rows: 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-      "logo section-name"
-      "menu main-content"
-      "menu main-content"
-      "menu main-content"
-      "menu main-content"
-      "menu footer";
-  }
+.container {  
+  display: grid;
+  grid-template-columns: 0.4fr 1.6fr;
+  grid-template-rows: 50px auto auto;
+  grid-auto-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "logo section-name"
+    "menu main-content"
+    "menu footer";
+}
   
-  .main-content { 
-    grid-area: main-content;
-    margin: 2rem 0rem;
-  }
+.main-content { 
+  grid-area: main-content;
+  margin: 2rem 1rem;
+}
   
-  .logo { grid-area: logo; }
+.logo { grid-area: logo; }
   
-  .menu { grid-area: menu; }
+.menu { grid-area: menu; }
   
-  .section-name { grid-area: section-name; }
+.section-name { grid-area: section-name; }
   
-  .footer { grid-area: footer; }
-
+.footer { grid-area: footer; }
 </style>
-

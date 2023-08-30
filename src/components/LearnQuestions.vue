@@ -1,18 +1,18 @@
 <template>
-    <div>
-      <ul v-for="question in questions" :key="question.id">
-        <li>
-          <h3>{{ question.question }}</h3> <br>
-        </li>
-        <li>
-            <p>{{ question.answer }}</p>
-        </li>
-      </ul>
-    </div>
-  </template>
+  <div>
+    <ul v-for="question in questions" :key="question.id">
+      <li>
+        <h3>{{ question.question }}</h3> <br>
+      </li>
+      <li>
+        <p>{{ question.answer }}</p>
+      </li>
+    </ul>
+  </div>
+</template>
 
 <script>
-import learnData from '@/services/learn.json';
+import learnData from '../services/learn.json';
 
 export default {
   data() {
@@ -28,7 +28,10 @@ export default {
 
 <style scoped>
 ul{
-    padding: 1.5rem 6rem 0rem 1.5rem;
+  padding: 1.5rem 6rem 0rem 1.5rem;
 }
 
+ul:first-child{
+  padding: 0.5rem 6rem 0rem 1.5rem;
+}
 </style>
