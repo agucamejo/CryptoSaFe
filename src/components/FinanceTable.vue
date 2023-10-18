@@ -31,17 +31,11 @@
     </div>
 
     <hr>
-
-    <div class="modal" v-if="showModal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <p>{{ modalMessage }}</p>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import axios from 'axios';
 import { getTransactionsByUserId } from '../services/apiClient';
 import DoughnutChart from './DoughnutChart.vue';
@@ -56,12 +50,10 @@ export default {
       transactions: [],
       userId: localStorage.getItem('id'),
       totalARS: 0,
-      showModal: false,
-      modalMessage: '',
       formattedNumber: formattedNumber,
     };
   },
-  computed: {
+  computed: { //Calculan etiquetas y valores para el gráfico.
     cryptoLabels() {
       return this.transactions.map(transaction => transaction.crypto_code.toUpperCase());
     },
@@ -73,7 +65,7 @@ export default {
     await this.fetchTransactionHistory();
   },
   methods: {
-    async fetchTransactionHistory() {
+    async fetchTransactionHistory() { //Agrupa y procesa transacciones para calcular total en ARS y actualizar transactions.
       try {
         const response = await getTransactionsByUserId(this.userId);
 
@@ -113,11 +105,15 @@ export default {
         this.transactions = this.transactions.filter((transaction) => transaction.crypto_amount > 0);
         
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al cargar el historial de transacciones.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al cargar el historial de transacciones.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })  
       }
     },
-    async fetchPriceARS(cryptoCode) { 
+    async fetchPriceARS(cryptoCode) { //Actualiza los valores de dinero en ARS en base a los precios obtenidos de la API
       try {
         const response = await axios.get(`https://criptoya.com/api/tiendacrypto/${cryptoCode}/ars/0.1`);
         
@@ -131,8 +127,12 @@ export default {
           }
         });
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al obtener el precio en ARS de la criptomoneda.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al obtener el precio en ARS de la criptomoneda.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })  
       }
     },
   },

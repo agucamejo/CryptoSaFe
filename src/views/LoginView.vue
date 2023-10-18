@@ -18,30 +18,22 @@
         </div>
       </div>
     </form>
-
-    <div class="modal" v-if="showModal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <p>{{ modalMessage }}</p>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import { defineComponent, ref } from 'vue';
-import {useAuthStore} from '../stores/login';
+import {useAuthStore} from '../stores/login'; 
 import {useRouter} from 'vue-router';
 
 export default defineComponent({
   setup() {
     const id = ref('');
     const password = ref('');
-    const showModal = ref(false);
-    const modalMessage = ref('');
 
-    const authStore = useAuthStore();
-    const router = useRouter();
+    const authStore = useAuthStore(); // Maneja el estado de autenticación
+    const router = useRouter(); // Accede a la instancia del enrutador
 
     const submitForm = () => {
       const idRegEx = /^[a-zA-Z0-9]+$/;
@@ -49,31 +41,40 @@ export default defineComponent({
       
       if (id.value && password.value) {
         if (!idRegEx.test(id.value)) {
-          modalMessage.value = 'El nombre de usuario solo puede contener letras y números sin espacios ni caracteres especiales.';
-          showModal.value = true;
+          Swal.fire({
+          title: 'Atención!',
+          text: 'El ID de usuario no cumple los requisitos.',
+          icon: 'warning',
+          confirmButtonText: 'Entendido'
+        }) 
           return;
         }
 
         if(!passwordRegEx.test(password.value)){
-          modalMessage.value = 'Contraseña incorrecta. \n Debe contener como mínimo 8 caracteres. \n Debe contener como mínimo un número, un caracter especial, una mayúscula y una minúscula.';
-          showModal.value = true;
+          Swal.fire({
+            title: 'Error!',
+            text: 'Contraseña incorrecta, vuelve a intentarlo.',
+            icon: 'error',
+            confirmButtonText: 'Entendido'
+          });
           return;
         }
 
-        authStore.setCredentials(id.value, password.value);
+        authStore.setCredentials(id.value, password.value); //Almacena las credenciales
         router.push({ name: 'home' });
       } else {
-        modalMessage.value = 'Por favor, completa ambos campos.';
-        showModal.value = true;
+        Swal.fire({
+          title: 'Atención!',
+          text: 'Por favor, complete ambos campos.',
+          icon: 'warning',
+          confirmButtonText: 'Entendido'
+        })  
       }
     };
-
 
     return {
       id,
       password,
-      showModal,
-      modalMessage,
       submitForm,
     };
   },

@@ -1,7 +1,8 @@
+//Configura las rutas con Vue Router 
 import { createRouter, createWebHistory } from 'vue-router'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+const router = createRouter({ //Crea el enrutador.
+  history: createWebHistory(import.meta.env.BASE_URL), //Usa la URL base definida para crear un historial de navegación. 
   routes: [
     {
       path: '/',
@@ -47,3 +48,5 @@ const router = createRouter({
 })
 
 export default router
+
+//Los componentes se cargan de manera diferida (lazy-loaded) usando funciones lambda (() => import(...)) para mejorar el rendimiento, cargando los componentes solo cuando se necesitan.

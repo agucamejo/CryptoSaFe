@@ -1,8 +1,9 @@
+//Gestiona la opción activa en el menú de la aplicación.
 import { defineStore } from 'pinia';
 
 export const useActiveOptionStore = defineStore('activeOption', {
   state: () => ({
-    activeOption: localStorage.getItem('activeOption') || 'inicio',
+    activeOption: localStorage.getItem('activeOption') || 'inicio', //Estado inicial de la store
   }),
   actions: {
     setActiveOption(option) {

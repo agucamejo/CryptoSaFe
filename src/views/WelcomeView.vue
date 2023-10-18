@@ -16,9 +16,9 @@
 
     <div class="slider" v-if="coinData.length">
       <div class="slider-track">
-        <div class="slide" v-for="(data, index) in coinData" :key="index">
+        <div class="slide" v-for="(data, index) in coinData" :key="index"> <!--Recorre coinData y se asigna una key a cada elemento. -->
           <div class="crypto">
-            <h4 :style="colors[index % colors.length]">{{ data.coin }}</h4>
+            <h4 :style="colors[index % colors.length]">{{ data.coin }}</h4> <!--Asigna colores de manera aleatoria -->
             <p>Venta <span>{{ formattedNumber(data.ask) }}</span></p>
             <p>Compra <span>{{ formattedNumber(data.bid) }}</span></p>
           </div>
@@ -70,12 +70,12 @@ import { formattedNumber } from '../components/methods/correctNumber';
 export default {
   data() {
     return {
-      coinData: [],
+      coinData: [], //Almacena info actualizada de las cryptos
       colors: ['color: #143F6B', 'color:#B504D9', 'color:#422DB8','color:#08726E','color:#0079FF', 'color:#DF0000', 'color:#FF0060', 'color:#8B1874', 'color:#54B435'],
       formattedNumber: formattedNumber,
     };
   },
-  async created() {
+  async created() { // Se ejecuta cuando el componente se crea, antes de montar el DOM.
     const coins = ["BNB", "BTC", "BUSD", "DAI", "ETH", "MATIC", "SOL", "USDC", "USDT"];
     const promises = coins.map(async coin => {
       try {
@@ -97,7 +97,7 @@ export default {
     } catch (error) {
       console.error("Error al obtener los datos de las criptomonedas:", error);
     }
-  },
+  }
 };
 </script>
 

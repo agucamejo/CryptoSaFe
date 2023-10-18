@@ -68,17 +68,11 @@
         <button @click="validateAndConfirm" class="confirmation-button">Finalizar venta</button>
       </div>
     </div>
-
-    <div class="modal" v-if="showModal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <p>{{ modalMessage }}</p>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import { ref } from 'vue';
 import { postTransaction, getTransactionsByUserId } from '../services/apiClient';
 import { sendFormattedDate } from './methods/correctDate';
@@ -87,22 +81,20 @@ import { formattedNumber } from './methods/correctNumber';
 export default {
   data() {
     return {
-      transactions: [],
-      userId: localStorage.getItem('id'),
+      transactions: [], //Almacena las transacciones.
+      userId: localStorage.getItem('id'), 
       totalARS: 0,
       saleCoin: 'btc',
       paymentCoin: 'ars',
-      data: null,
+      data: null, //Almacenará los datos de intercambio recuperados de la API de criptoya.
       loading: true,
       saleValue: ref(''),
       paymentValue: ref(''),
       showConfirmation: false,
       username: '',
       password: '',
-      showModal: false,
-      modalMessage: '',
       formattedNumber: formattedNumber,
-      groupedTransactions: {},
+      groupedTransactions: {}, //Almacena las transacciones agrupadas por nombre de la crypto.
     };
   },
   async mounted() {
@@ -120,7 +112,7 @@ export default {
         console.error(error);
       }
     },
-    convertSaleCoin() {
+    convertSaleCoin() { 
       this.paymentValue = this.saleValue * this.data.bid;
     },
     convertPaymentCoin() {
@@ -135,20 +127,32 @@ export default {
       if (this.username.trim() === storedId && this.password.trim() === storedPassword) {
         
         if (this.saleValue <= 0 || this.paymentValue <= 0) {
-          this.modalMessage = 'El monto y el valor deben ser mayores a 0.';
-          this.showModal = true;
+          Swal.fire({
+            title: 'Atención!',
+            text: 'El monto y el valor deben ser mayores a 0.',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+          })
           return;
         }
 
         const userCryptoBalance = this.groupedTransactions[this.saleCoin];
         if (!userCryptoBalance) {
-          this.modalMessage = 'No tienes fondos de esta criptomoneda para realizar esta venta.';
-          this.showModal = true;
+          Swal.fire({
+            title: 'Atención!',
+            text: 'No tienes fondos de esta criptomoneda para realizar la venta.',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+          })
           return;
         }
         if (this.saleValue > userCryptoBalance.totalCrypto) {
-          this.modalMessage = 'No tienes suficientes fondos de esta criptomoneda para realizar esta venta.';
-          this.showModal = true;
+          Swal.fire({
+            title: 'Atención!',
+            text: 'No tienes fondos de esta criptomoneda para realizar la venta.',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+          })
           return;
         }
 
@@ -168,8 +172,12 @@ export default {
         }
       } 
       else {
-        this.modalMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Credenciales incorrectas. Inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })
       }
     },
 
@@ -184,11 +192,19 @@ export default {
         this.username = '';
         this.password = '';
 
-        this.modalMessage = 'Su venta fue ejecutada con éxito!!!';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Aceptado!',
+          text: '¡Su venta fue ejecutada con éxito!',
+          icon: 'success',
+          confirmButtonText: 'Continuar'
+        })
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al procesar la venta. Por favor, inténtelo de nuevo más tarde.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al procesar la venta. Por favor, inténtelo de nuevo más tarde.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })
       }
     },
 
@@ -224,8 +240,12 @@ export default {
   
         this.transactions = this.transactions.filter((transaction) => transaction.crypto_amount > 0);
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al cargar el historial de transacciones.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al cargar el historial de transacciones.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })
       }
     },
   },

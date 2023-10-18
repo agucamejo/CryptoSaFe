@@ -46,18 +46,18 @@ import { formattedNumber } from './methods/correctNumber';
 export default {
   data() {
     return {
-      exchangeData: [],
-      sortedExchangeData: [],
+      exchangeData: [], //Almacenará los datos obtenidos de la API.
+      sortedExchangeData: [],//Almacenará los datos de intercambio ordenados.
       selectedCrypto: 'btc',
-      sortingColumn: '',
-      ascendingOrder: true,
+      sortingColumn: '', //Almacena la columna por la cual se ordena la tabla.
+      ascendingOrder: true, //Determina si el orden es ascendente o descendente. 
       formattedNumber: formattedNumber,
     };
   },
   async mounted() {
     await this.fetchExchangeData();
   },
-  watch: {
+  watch: { //Se activan cuando cambian propiedades en los métodos y reorganizan los datos.
     exchangeData() {
       this.organizeExchangeData();
     },
@@ -91,7 +91,7 @@ export default {
         console.error(error);
       }
     },
-    toggleSorting(column) {
+    toggleSorting(column) { //Alterna la dirección de orden si se hace clic en la misma columna, o establece una nueva
       if (this.sortingColumn === column) {
         this.ascendingOrder = !this.ascendingOrder;
       } else {
@@ -99,18 +99,18 @@ export default {
         this.ascendingOrder = true;
       }
     },
-    organizeExchangeData() {
+    organizeExchangeData() { //Ordena los datos en función de la columna y la dirección seleccionada
       const order = this.ascendingOrder ? 1 : -1;
       this.sortedExchangeData = [...this.exchangeData].sort((a, b) => {
         return this.sortingColumn === 'exchange'
-      ? a.exchange.localeCompare(b.exchange) * order
-      : this.sortingColumn === 'ask'
-      ? (a.ask - b.ask) * order
-      : this.sortingColumn === 'totalAsk'
-      ? (a.totalAsk - b.totalAsk) * order
-      : this.sortingColumn === 'bid'
-      ? (a.bid - b.bid) * order
-      : (a.totalBid - b.totalBid) * order;
+          ? a.exchange.localeCompare(b.exchange) * order
+          : this.sortingColumn === 'ask'
+          ? (a.ask - b.ask) * order
+          : this.sortingColumn === 'totalAsk'
+          ? (a.totalAsk - b.totalAsk) * order
+          : this.sortingColumn === 'bid'
+          ? (a.bid - b.bid) * order
+          : (a.totalBid - b.totalBid) * order;
       });
     },
   },
