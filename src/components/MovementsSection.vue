@@ -72,25 +72,11 @@
         <button @click="closeModal">Salir</button>
       </form>
     </div>
-
-    <div v-if="showConfirmationModal" class="modal">
-      <div class="modal-content">
-        <p>¿Estás seguro de que deseas eliminar esta transacción?</p>
-        <button @click="confirmDelete">Eliminar</button>
-        <button @click="showConfirmationModal = false">Cancelar</button>
-      </div>
-    </div>
-
-    <div class="modal" v-if="showModal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <p>{{ modalMessage }}</p>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import { getTransactionsByUserId, getTransactionDetails, deleteTransaction, updateTransaction } from '@/services/apiClient';
 import { sendFormattedDate, getFormattedDate } from './methods/correctDate';
 import { formattedNumber } from './methods/correctNumber';
@@ -103,9 +89,6 @@ export default {
       showDetailsModal: false,
       selectedTransaction: null,
       editingTransaction: null,
-      showModal: false,
-      showConfirmationModal: false,
-      modalMessage: '',
       formattedNumber: formattedNumber,
     };
   },
@@ -122,8 +105,12 @@ export default {
         }
         this.transactions = response.data;
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al cargar el historial de transacciones. Intentelo de nuevo más tarde';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al cargar el historial de transacciones. Intentelo de nuevo más tarde.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })
       }
     },
     async seeDetails(transaction) {
@@ -134,8 +121,12 @@ export default {
         this.selectedTransaction.datetime = formattedDate;
         this.showDetailsModal = true;
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al obtener los detalles de la transacción.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al obtener los detalles de la transacción.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })
       }
     },
     closeModal() {
@@ -144,12 +135,24 @@ export default {
       this.selectedTransaction = null;
     },
 
-    editTransaction(transaction) {
-      this.editingTransaction = { ...transaction};
+    editTransaction(transaction) { //Crea una copia de la transacción usando operador de propagación
+      this.editingTransaction = { ...transaction}; //Almacena la copia de la transacción y permite que el usuario haga cambios
     },
 
     deleteTransaction(transaction) {
-      this.showConfirmationModal = true;
+      Swal.fire({
+        title: 'Está seguro que desea eliminar?',
+        text: "No podrá recuperar los datos!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#229936',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.confirmDelete(); // Llama a tu función confirmDelete si el usuario confirma
+        }
+      });
       this.selectedTransactionToDelete = transaction;
     },
     async confirmDelete() {
@@ -160,14 +163,22 @@ export default {
           this.transactions.splice(index, 1);
         }
         
-        this.modalMessage = 'Transacción eliminada con éxito.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Aceptado!',
+          text: '¡Transacción eliminada con éxito!',
+          icon: 'success',
+          confirmButtonText: 'Continuar'
+        })  
 
         this.selectedTransactionToDelete = null;
         this.showConfirmationModal = false;
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al eliminar la transacción.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al eliminar la transacción.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })
 
         this.selectedTransactionToDelete = null;
         this.showConfirmationModal = false;
@@ -189,12 +200,20 @@ export default {
 
         await updateTransaction(this.editingTransaction._id, updatedData);
         await this.fetchTransactionHistory();
-        this.modalMessage = 'Los cambios se guardaron correctamente.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Aceptado!',
+          text: '¡Los cambios se guardaron correctamente!',
+          icon: 'success',
+          confirmButtonText: 'Continuar'
+        })  
         this.editingTransaction = null;
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al guardar los cambios.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al guardar los cambios.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })
       }
     },
   },

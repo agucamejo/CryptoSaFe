@@ -1,3 +1,4 @@
+//Devuelve el mismo número pero en formato más legible para el usuario (convención Arg)
 export function formattedNumber(number) {
   if (number === undefined) {
     return '';

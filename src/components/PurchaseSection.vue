@@ -69,17 +69,11 @@
         <button @click="validateAndConfirm" class="confirmation-button">Finalizar compra</button>
       </div>
     </div>
-
-    <div class="modal" v-if="showModal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <p>{{ modalMessage }}</p>
-      </div>
-    </div>
   </div>
 </template>
   
 <script>
+import Swal from 'sweetalert2';
 import { ref } from 'vue';
 import { postTransaction } from '../services/apiClient';
 import { sendFormattedDate } from './methods/correctDate';
@@ -97,8 +91,6 @@ export default {
       showConfirmation: false,
       username: '',
       password: '',
-      showModal: false,
-      modalMessage: '',
       formattedNumber: formattedNumber,
     };
   },
@@ -129,8 +121,12 @@ export default {
 
       if (this.username.trim() === storedId && this.password.trim() === storedPassword) {
         if (this.purchaseValue <= 0 || this.paymentValue <= 0) {
-          this.modalMessage = 'El monto y el valor deben ser mayores a 0.';
-          this.showModal = true;
+          Swal.fire({
+            title: 'Atención!',
+            text: 'El monto y el valor deben ser mayores a 0.',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+          })
           return;
         }
 
@@ -149,8 +145,12 @@ export default {
           console.error(error);
         }
       } else {
-        this.modalMessage = 'Credenciales incorrectas. Inténtalo de nuevo.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Credenciales incorrectas. Inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })  
       }
     },
     async sendTransactionData(transactionData) {
@@ -164,11 +164,19 @@ export default {
         this.username = '';
         this.password = '';
 
-        this.modalMessage = '¡Su compra fue ejecutada con éxito!';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Aceptado!',
+          text: '¡Su compra fue ejecutada con éxito!',
+          icon: 'success',
+          confirmButtonText: 'Continuar'
+        })  
       } catch (error) {
-        this.modalMessage = 'Ha ocurrido un error al procesar la compra. Por favor, inténtelo de nuevo más tarde.';
-        this.showModal = true;
+        Swal.fire({
+          title: 'Error!',
+          text: 'Ha ocurrido un error al procesar la compra. Por favor, inténtelo de nuevo más tarde.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        })  
       }
     },
   },

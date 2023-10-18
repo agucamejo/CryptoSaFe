@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       userId: localStorage.getItem('id'),
-      results: [],
+      results: [], //Almacenará los resultados del análisis
       formattedNumber: formattedNumber,
     };
   },

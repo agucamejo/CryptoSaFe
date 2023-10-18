@@ -9,7 +9,7 @@ import { useActiveOptionStore } from '../stores/menuBar.js';
 
 export default {
   setup() {
-    const activeOptionStore = useActiveOptionStore();
+    const activeOptionStore = useActiveOptionStore(); //Se obtiene el estado de la opción activa
     const activeOption = activeOptionStore.activeOption;
 
     return {

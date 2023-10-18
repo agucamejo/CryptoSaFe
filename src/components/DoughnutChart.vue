@@ -1,10 +1,11 @@
+//Gráfico que representa la composición de las finanzas del usuario.
 <template>
   <div>
     <h3>COMPOSICIÓN DE LAS FINANZAS</h3>
   </div>
 
   <div style="height: 31.25rem">
-    <canvas ref="chartCanvas"></canvas>
+    <canvas ref="chartCanvas"></canvas><!--Se renderizará el gráfico.--> 
   </div>
 </template>
   
@@ -13,11 +14,11 @@ import Chart from "chart.js/auto";
 
 export default {
   props: {
-    labels: {
+    labels: { //Etiquetas de los sectores del gráfico
       type: Array,
       required: true,
     },
-    data: {
+    data: { //Datos numéricos de cada sector.
       type: Array,
       required: true,
     },
@@ -25,12 +26,12 @@ export default {
   mounted() {
     this.renderDoughnut();
   },
-  watch: {
+  watch: { //Se controlan los cambios en las propiedades y llaman a updateDoughnut en caso de cambios.
     labels: "updateDoughnut",
     data: "updateDoughnut",
   },
   methods: {
-    renderDoughnut() {
+    renderDoughnut() { //Crea y renderiza el gráfico. Define datos y caractericticas. 
       const dataDoughnut = {
         labels: this.labels,
         datasets: [
