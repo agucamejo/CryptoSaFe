@@ -13,6 +13,8 @@
     </select>
 
     <h3>TABLA {{ selectedCrypto.toUpperCase() }}</h3>
+    <div v-if="isLoading"> <AppSpinner v-if="isLoading" /></div>
+    <div v-else>
     <div v-if="sortedExchangeData.length > 0">
       <table>
         <thead>
@@ -38,6 +40,7 @@
     </div>
     <div v-else>Hubo un problema al cargar los datos. Por favor, inténtalo nuevamente más tarde.</div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -46,6 +49,7 @@ import { formattedNumber } from './methods/correctNumber';
 export default {
   data() {
     return {
+      isLoading: false,
       exchangeData: [], //Almacenará los datos obtenidos de la API.
       sortedExchangeData: [],//Almacenará los datos de intercambio ordenados.
       selectedCrypto: 'btc',
@@ -71,6 +75,7 @@ export default {
   methods: {
     async fetchExchangeData() {
       try {
+        this.isLoading = true;
         const response = await fetch(`https://criptoya.com/api/${this.selectedCrypto}/ars/0.1`);
         const data = await response.json();
 
@@ -89,6 +94,9 @@ export default {
         this.exchangeData = exchangeDataArray;
       } catch (error) {
         console.error(error);
+      }
+      finally {
+        this.isLoading = false; // Indicar que la carga ha terminado
       }
     },
     toggleSorting(column) { //Alterna la dirección de orden si se hace clic en la misma columna, o establece una nueva

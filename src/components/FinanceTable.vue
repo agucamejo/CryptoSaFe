@@ -1,6 +1,8 @@
 <template>
   <div>
     <h3>MIS FINANZAS</h3>
+    <div v-if="isLoading"> <AppSpinner v-if="isLoading" /></div>
+    <div v-else>
     <table v-if="transactions.length > 0">
       <thead>
         <tr>
@@ -24,7 +26,7 @@
     </table>
 
     <div v-else>No hay transacciones registradas para este usuario o no posee criptomonedas.</div>
-
+  </div>
     <div class="chart-container" v-if="transactions.length > 0">
       <hr>
       <DoughnutChart :labels="cryptoLabels" :data="cryptoAmounts" />
@@ -47,6 +49,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       transactions: [],
       userId: localStorage.getItem('id'),
       totalARS: 0,
@@ -68,6 +71,7 @@ export default {
     async fetchTransactionHistory() { //Agrupa y procesa transacciones para calcular total en ARS y actualizar transactions.
       try {
         const response = await getTransactionsByUserId(this.userId);
+        this.isLoading = true;
 
         const groupedTransactions = {};
         response.data.forEach((transaction) => {
@@ -111,6 +115,9 @@ export default {
           icon: 'error',
           confirmButtonText: 'Entendido'
         })  
+      }
+      finally {
+        this.isLoading = false; // Indicar que la carga ha terminado
       }
     },
     async fetchPriceARS(cryptoCode) { //Actualiza los valores de dinero en ARS en base a los precios obtenidos de la API

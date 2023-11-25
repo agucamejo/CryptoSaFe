@@ -1,6 +1,8 @@
 <template>
   <div>
     <h3>ANÁLISIS DE INVERSIONES</h3>
+    <div v-if="isLoading"> <AppSpinner v-if="isLoading" /></div>
+    <div v-else>
     <table v-if="results.length > 0">
       <thead>
         <tr>
@@ -17,6 +19,7 @@
     </table>
     <div v-else>No hay resultados para mostrar.</div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -27,6 +30,7 @@ import { formattedNumber } from './methods/correctNumber';
 export default {
   data() {
     return {
+      isLoading: false,
       userId: localStorage.getItem('id'),
       results: [], //Almacenará los resultados del análisis
       formattedNumber: formattedNumber,
@@ -47,6 +51,7 @@ export default {
     },
     async analyzeInvestments() {
       try {
+        this.isLoading = true;
         const response = await getTransactionsByUserId(this.userId);
         const groupedResults = {};
 
@@ -89,6 +94,9 @@ export default {
         this.results = analyzedResults;
       } catch (error) {
         console.error(error);
+      }
+      finally {
+        this.isLoading = false; // Indicar que la carga ha terminado
       }
     },
   },
