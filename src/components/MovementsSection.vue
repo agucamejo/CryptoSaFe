@@ -1,6 +1,8 @@
 <template>
   <div>
     <h2>Historial de Transacciones</h2>
+    <div v-if="isLoading"> <AppSpinner v-if="isLoading" /></div>
+    <div v-else>
     <table v-if="transactions.length > 0">
       <thead>
         <tr>
@@ -28,6 +30,7 @@
       </tbody>
     </table>
     <div v-else>No hay transacciones registradas para este usuario.</div>
+  </div>
     <div v-if="showDetailsModal" class="modal">
       <div class="modal-content">
         <h4>Ver Transacción</h4>
@@ -84,6 +87,7 @@ import { formattedNumber } from './methods/correctNumber';
 export default {
   data() {
     return {
+      isLoading: false,
       transactions: [],
       userId: localStorage.getItem('id'),
       showDetailsModal: false,
@@ -98,6 +102,7 @@ export default {
   methods: {
     async fetchTransactionHistory() {
       try {
+        this.isLoading = true;
         const response = await getTransactionsByUserId(this.userId);
         for (const obj of response.data) {
           const correctDateTime = getFormattedDate(new Date(obj.datetime));
@@ -112,6 +117,9 @@ export default {
           confirmButtonText: 'Entendido'
         })
       }
+      finally {
+        this.isLoading = false; // Indicar que la carga ha terminado
+      }
     },
     async seeDetails(transaction) {
       try {
@@ -120,6 +128,7 @@ export default {
         const formattedDate = getFormattedDate(new Date(this.selectedTransaction.datetime));
         this.selectedTransaction.datetime = formattedDate;
         this.showDetailsModal = true;
+        this.isLoading = true;
       } catch (error) {
         Swal.fire({
           title: 'Error!',
@@ -127,6 +136,9 @@ export default {
           icon: 'error',
           confirmButtonText: 'Entendido'
         })
+      }
+      finally {
+        this.isLoading = false; // Indicar que la carga ha terminado
       }
     },
     closeModal() {
@@ -157,6 +169,7 @@ export default {
     },
     async confirmDelete() {
       try {
+        this.isLoading = true;
         await deleteTransaction(this.selectedTransactionToDelete._id);
         const index = this.transactions.findIndex((item) => item._id === this.selectedTransactionToDelete._id);
         if (index !== -1) {
@@ -183,11 +196,15 @@ export default {
         this.selectedTransactionToDelete = null;
         this.showConfirmationModal = false;
       }
+      finally {
+        this.isLoading = false; // Indicar que la carga ha terminado
+      }
     },
     async saveEditedData() {
       try {
         const formattedDate = sendFormattedDate(new Date());
         this.editingTransaction.datetime = formattedDate;
+        this.isLoading = true;
 
         const updatedData = {
           action: this.editingTransaction.action,
@@ -214,6 +231,9 @@ export default {
           icon: 'error',
           confirmButtonText: 'Entendido'
         })
+      }
+      finally {
+        this.isLoading = false; // Indicar que la carga ha terminado
       }
     },
   },
