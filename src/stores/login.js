@@ -1,18 +1,24 @@
-import { defineStore } from 'pinia';
+import { createStore } from 'vuex';
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    id: localStorage.getItem('id') || '',
-    password: localStorage.getItem('password') || '',
-  }),
+const store = createStore({
+  state: {
+    usuario: null,
+  },
+  mutations: {
+    setUsuario(state, payload) {
+      state.usuario = payload;
+    },
+  },
   actions: {
-    setCredentials(id, password) {
-      this.id = id;
-      this.password = password;
-
-      localStorage.setItem('id', id);
-      localStorage.setItem('password', password);
-      localStorage.setItem('activeOption', 'inicio');
+    detectarUsuario({ commit }, usuario) {
+      commit('setUsuario', usuario);
+    },
+  },
+  getters: {
+    existeUsuario(state) {
+      return state.usuario !== null;
     },
   },
 });
+
+export default store;

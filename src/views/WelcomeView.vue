@@ -5,7 +5,14 @@
         <img src="../components/icons/logo-cryptosafe.svg" alt="Logo CryptoSaFe" title="CryptoSaFe"/>
         <span class="titles logo-crypto">Crypto</span><span class="titles logo-safe">SaFe</span>
       </a>
-      <RouterLink to="/login" class="login-btn">Iniciar Sesión</RouterLink>
+
+      <RouterLink to="/login" v-if="!existeUsuario" class="btn btn-outline-primary mx-2" >
+        Inicia Sesión
+      </RouterLink> 
+
+      <RouterLink v-if="!existeUsuario" to="/register" class="btn btn-outline-warning" >
+        Regístrate
+      </RouterLink> 
     </header>
 
     <section class="banner">
@@ -66,14 +73,22 @@
 
 <script>
 import { formattedNumber } from '../components/methods/correctNumber';
+import { mapGetters } from 'vuex'   
 
 export default {
   data() {
     return {
+      email: '',
+      password: '',
+      repassword: '',
+      errorMessage: '',
       coinData: [], //Almacena info actualizada de las cryptos
       colors: ['color: #143F6B', 'color:#B504D9', 'color:#422DB8','color:#08726E','color:#0079FF', 'color:#DF0000', 'color:#FF0060', 'color:#8B1874', 'color:#54B435'],
       formattedNumber: formattedNumber,
     };
+  },
+  computed: {
+    ...mapGetters(['existeUsuario'])
   },
   async created() { // Se ejecuta cuando el componente se crea, antes de montar el DOM.
     const coins = ["BNB", "BTC", "BUSD", "DAI", "ETH", "MATIC", "SOL", "USDC", "USDT"];

@@ -42,20 +42,27 @@
 </template>
 
 <script>
-import { useActiveOptionStore } from '../stores/menuBar.js';
-import { useAuthStore } from '../stores/login.js';
+import menuBarStore from '../stores/menuBar.js';
+import store from '../stores/login';
+import { ref, watch } from 'vue';
 
 export default {
   setup() {
-    const activeOptionStore = useActiveOptionStore();
-    const activeOption = activeOptionStore.activeOption;
-    const setActiveOption = activeOptionStore.setActiveOption;
-    const clearActiveOption = activeOptionStore.clearActiveOption;
-    const authStore = useAuthStore();
+    const { state, actions } = menuBarStore;
+    const activeOption = ref(state.activeOption); 
+
+    watch(activeOption, (newVal) => {
+      actions.setActiveOption(newVal);
+    });
+
+    const clearActiveOption = () => {
+      activeOption.value = 'inicio'; 
+    };
+
+    const authStore = store;
 
     return {
       activeOption,
-      setActiveOption,
       clearActiveOption,
       username: authStore.id, 
     };
