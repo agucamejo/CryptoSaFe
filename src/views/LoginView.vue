@@ -7,129 +7,78 @@
       </a>
     </header>
 
-    <form @submit.prevent="login( this.email, this.password )">
-              <!-- CORREO --> 
-              <div class="input-group mb-3">
-              <span class="input-group-text">Correo</span>
-              <input v-model="email" 
-                      type="email"
-                      required="true"
-                      class="form-control">
-              </div>
-              <!-- PASSWORD --> 
-              <div class="input-group mb-3">
-              <span class="input-group-text">Password</span>
-              <input v-model="password" 
-                      type="password"
-                      required="true" 
-                      class="form-control">
-              </div>
-              <div class="d-grid gap-2">
-                <button type="submit" 
-                  class="btn btn-primary" 
-                >
-                  Iniciar sesión
-                </button>
-              </div>
-              </form>
+    <form class="form" @submit.prevent="submitForm">
+      <div class="inner-container">
+        <div class="box">
+          <h1>Iniciar Sesión</h1>
+          <input type="text" id="id" v-model="id" placeholder="Usuario"/>
+          <input type="password" id="password"  v-model="password" placeholder="Contraseña"/>
+          <button type="submit">Ingresar</button>
+          <RouterLink to="/">Cancelar</RouterLink>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
-import { 
-  getAuth,
-  signInWithEmailAndPassword
-} from "firebase/auth";
-import { mapGetters } from 'vuex'   
-import router from '../router/index';
+import Swal from 'sweetalert2';
+import { defineComponent, ref } from 'vue';
+import {useAuthStore} from '../stores/login'; 
+import {useRouter} from 'vue-router';
 
-export default {
-  data() {
+export default defineComponent({
+  setup() {
+    const id = ref('');
+    const password = ref('');
+
+    const authStore = useAuthStore(); // Maneja el estado de autenticación
+    const router = useRouter(); // Accede a la instancia del enrutador
+
+    const submitForm = () => {
+      const idRegEx = /^[a-zA-Z0-9]+$/;
+      const passwordRegEx = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      
+      if (id.value && password.value) {
+        if (!idRegEx.test(id.value)) {
+          Swal.fire({
+          title: 'Atención!',
+          text: 'El ID de usuario no cumple los requisitos.',
+          icon: 'warning',
+          confirmButtonText: 'Entendido'
+        }) 
+          return;
+        }
+
+        if(!passwordRegEx.test(password.value)){
+          Swal.fire({
+            title: 'Error!',
+            text: 'Contraseña incorrecta, vuelve a intentarlo.',
+            icon: 'error',
+            confirmButtonText: 'Entendido'
+          });
+          return;
+        }
+
+        authStore.setCredentials(id.value, password.value); //Almacena las credenciales
+        router.push({ name: 'home' });
+      } else {
+        Swal.fire({
+          title: 'Atención!',
+          text: 'Por favor, complete ambos campos.',
+          icon: 'warning',
+          confirmButtonText: 'Entendido'
+        })  
+      }
+    };
+
     return {
-      email: '',
-      password: '',
-      repassword: '',
-      errorMessage: '',
+      id,
+      password,
+      submitForm,
     };
   },
-  computed: {
-    ...mapGetters(['existeUsuario'])
-  },
-  methods: {    
-    login( email, password ) {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-          alert('¡Sesión iniciada', user, '!');
-          const user = userCredential.user;
-          router.push({ name: 'home' });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        this.errorMessage = error.message;
-        alert(this.errorMessage, errorCode);
-        router.push({ name: 'home' });
-      });
-    }
-  }
-}
-// import Swal from 'sweetalert2';
-// import { defineComponent, ref } from 'vue';
-// import store from '../stores/login'; 
-// import { useRouter } from 'vue-router';
-
-// export default defineComponent({
-//   setup() {
-//     const id = ref('');
-//     const password = ref('');
-
-//     const authStore = store(); 
-//     const router = useRouter();
-
-//     const submitForm = () => {
-//       const idRegEx = /^[a-zA-Z0-9]+$/;
-//       const passwordRegEx = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      
-//       if (id.value && password.value) {
-//         if (!idRegEx.test(id.value)) {
-//           Swal.fire({
-//           title: 'Atención!',
-//           text: 'El ID de usuario no cumple los requisitos.',
-//           icon: 'warning',
-//           confirmButtonText: 'Entendido'
-//         }) 
-//           return;
-//         }
-
-//         if(!passwordRegEx.test(password.value)){
-//           Swal.fire({
-//             title: 'Error!',
-//             text: 'Contraseña incorrecta, vuelve a intentarlo.',
-//             icon: 'error',
-//             confirmButtonText: 'Entendido'
-//           });
-//           return;
-//         }
-
-//         authStore.setCredentials(id.value, password.value); //Almacena las credenciales
-//         router.push({ name: 'home' });
-//       } else {
-//         Swal.fire({
-//           title: 'Atención!',
-//           text: 'Por favor, complete ambos campos.',
-//           icon: 'warning',
-//           confirmButtonText: 'Entendido'
-//         })  
-//       }
-//     };
-
-//     return {
-//       id,
-//       password,
-//       submitForm,
-//     };
-//   },
-// });
+});
 </script>
 
 <style scoped>

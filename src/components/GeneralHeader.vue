@@ -1,16 +1,16 @@
 <template>
   <div class="header">
-    <p class="titles" :style="'font-weight:400'">{{ activeOption.toUpperCase() }}</p>
+    <p class="titles" :style="'font-weight:400'">{{activeOption.toUpperCase()}}</p>
   </div>
 </template>
 
 <script>
-import menuBarStore from '../stores/menuBar.js';
+import { useActiveOptionStore } from '../stores/menuBar.js';
 
 export default {
   setup() {
-    const { state } = menuBarStore; 
-    const activeOption = state.activeOption;
+    const activeOptionStore = useActiveOptionStore(); //Se obtiene el estado de la opción activa
+    const activeOption = activeOptionStore.activeOption;
 
     return {
       activeOption,
@@ -18,7 +18,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .header{
