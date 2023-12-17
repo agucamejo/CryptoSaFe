@@ -1,8 +1,9 @@
-import { createStore } from 'vuex';
+//Gestiona la opción activa en el menú de la aplicación.
+import { defineStore } from 'pinia';
 
-const menuBarStore = createStore({
+export const useActiveOptionStore = defineStore('activeOption', {
   state: () => ({
-    activeOption: localStorage.getItem('activeOption') || 'inicio', 
+    activeOption: localStorage.getItem('activeOption') || 'inicio', //Estado inicial de la store
   }),
   actions: {
     setActiveOption(option) {
@@ -14,5 +15,3 @@ const menuBarStore = createStore({
     },
   },
 });
-
-export default menuBarStore;
